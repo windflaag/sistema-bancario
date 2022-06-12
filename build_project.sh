@@ -1,9 +1,23 @@
 #!/bin/bash
-PROJECT_FOLDER=fernbank
 BUILD_SPEED=1
 
+function build_executable () {
+    rm -rf ./build
+    mkdir ./build
+    cd ./build
+    cmake ../source
+    make
+    cd ..
+}
+
+function link_to_runtime () {
+    cp ./build/main ./runtime/server
+}
+
 function main () {
-    echo -e "nothing for now"
+    clear
+    build_executable
+    link_to_runtime
 }
 
 main
