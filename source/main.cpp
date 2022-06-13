@@ -1,18 +1,18 @@
-#include "server/ServerPool.hpp"
+#include "server/ServerPoolFactory.hpp"
+#include "custom/Config.hpp"
+#include "singleton/Singleton.hpp"
 
-DEFINE_int32(HTTP_PORT, 8080, "Porta su cui il server usa HTTP");
-DEFINE_string(SERVER_ADDRESS, "0.0.0.0", "IP o Hostname a cui il server si aggancia");
-DEFINE_int32(SERVER_THREADS, 16,
-    "concorenza in thread della server pool"
-    "con un valore <= 0 si usera' il numero di thread del computer");
-
-int main(int argc, char* argv[]) {
+void init_folly (int argc, char **argv) {
     folly::init(&argc, &argv, true);
+}
+
+int main(int argc, char **argv) {
+    init_folly(argc, argv);
+
+    singleton::instance()->attachConfig(new custom::Config("config.json"));
+    singleton::instance()->attachServerPool(
+        server::ServerPoolFactory::fromSingletonConfig());
     
-    std::printf("creating server pool ...");
-    ServerPool* pool = new ServerPool(FLAGS_HTTP_PORT, FLAGS_SERVER_ADDRESS, FLAGS_SERVER_THREADS);
-    std::printf("done\n");
-    pool->run();
-    
+    singleton::instance()->getServerPool()->run();
     return 0;
 }

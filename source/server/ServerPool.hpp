@@ -15,23 +15,29 @@
 
 #define DEFAULT_PORT 4242
 #define DEFAULT_ADDRESS "0.0.0.0"
+#define DEFAULT_THREADS 0
 
-class ServerPool {
-    private:
-        std::vector<proxygen::HTTPServer::IPConfig>* serverAddresses = NULL;
-        int concurrency = 1;
-        proxygen::HTTPServer* server = NULL;
+namespace server {
 
-        void setupAddress(std::string ADDRESS, int PORT);
-        void setupConcurrency(int THREADS_NUMBER);
-        void setupServerPool();
-    public:
+    class ServerPool {
+        private:
+            std::vector<proxygen::HTTPServer::IPConfig>* serverAddresses = NULL;
+            int concurrency = 1;
+            proxygen::HTTPServer* server = NULL;
 
-        ServerPool(int HTTP_PORT, std::string HTTP_ADDRESS, int SERVER_THREADS);
-        ServerPool(int SERVER_THREADS);
-        ~ServerPool();
+            void setupAddress(std::string ADDRESS, int PORT);
+            void setupConcurrency(int THREADS_NUMBER);
+            void setupServerPool();
+            void setup(int HTTP_PORT, std::string HTTP_ADDRESS, int SERVER_THREADS);
+        public:
 
-        void run();
-};
+            ServerPool(int HTTP_PORT, std::string HTTP_ADDRESS, int SERVER_THREADS);
+            ServerPool(int SERVER_THREADS);
+            ~ServerPool();
+
+            void run();
+    };
+
+}
 
 #endif

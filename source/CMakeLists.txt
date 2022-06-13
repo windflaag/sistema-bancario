@@ -12,6 +12,7 @@ set(CMAKE_MODULE_PATH
   )
 
 find_package(proxygen REQUIRED)
+find_package(jsoncpp REQUIRED)
 find_package(gflags REQUIRED)  # From the common CMake/
 
 message(STATUS "proxygen lib path: ${proxygen_INCLUDE_DIRECTORIES}")
@@ -22,6 +23,11 @@ foreach (_variableName ${_variableNames})
     message(STATUS "${_variableName}=${${_variableName}}")
 endforeach()
 
-add_subdirectory(server)
+add_subdirectory(server) # serverpool
+add_subdirectory(custom) # configuration
+add_subdirectory(singleton) # singleton
 add_executable(main main.cpp)
-target_link_libraries(main PUBLIC serverpool)
+target_link_libraries(
+    main PUBLIC 
+    serverpool configuration singleton
+    proxygen::proxygen proxygen::proxygenhttpserver jsoncpp)
