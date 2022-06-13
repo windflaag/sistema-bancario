@@ -1,11 +1,11 @@
-#ifndef __REST_CONTROLLER_FACTORY__
-#define __REST_CONTROLLER_FACTORY__
+#ifndef __CONTROLLER_FACTORY__
+#define __CONTROLLER_FACTORY__
 
 #include <proxygen/httpserver/RequestHandlerFactory.h>
 
-namespace rest {
+namespace politik {
 
-    class RestControllerFactory : public proxygen::RequestHandlerFactory {
+    class ControllerFactory : public proxygen::RequestHandlerFactory {
         public:
             void onServerStart(folly::EventBase* evb) noexcept override;
             void onServerStop() noexcept override;

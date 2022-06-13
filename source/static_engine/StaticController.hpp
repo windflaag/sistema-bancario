@@ -13,6 +13,8 @@ namespace static_engine {
 
     class StaticController : public proxygen::RequestHandler {
      public:
+      StaticController();
+
       void onRequest(
           std::unique_ptr<proxygen::HTTPMessage> headers) noexcept override;
 

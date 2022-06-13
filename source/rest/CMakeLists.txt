@@ -1,6 +1,5 @@
 add_library(
-    restcontrollers
-    RestRootController.cpp
-    RestNextController.cpp
-    RestControllerFactory.cpp
+    rest_engine
+    RestEndpointController.cpp
+    ApiController.cpp
 )

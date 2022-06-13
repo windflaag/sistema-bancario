@@ -1,6 +1,5 @@
 #include "ServerPool.hpp"
-#include "../static/StaticControllerFactory.hpp"
-#include "../rest/RestControllerFactory.hpp"
+#include "../politik/ControllerFactory.hpp"
 
 
 namespace server {
@@ -54,8 +53,7 @@ namespace server {
         // setup controllers
         options.handlerFactories =
             proxygen::RequestHandlerChain()
-                .addThen<static_engine::StaticControllerFactory>()
-                .addThen<rest::RestControllerFactory>()
+                .addThen<politik::ControllerFactory>()
                 .build();
         options.h2cEnabled = true;
 
