@@ -11,8 +11,6 @@
 #include <proxygen/httpserver/HTTPServer.h>
 #include <proxygen/httpserver/RequestHandlerFactory.h>
 
-#include "StaticControllerFactory.hpp"
-
 #define DEFAULT_PORT 4242
 #define DEFAULT_ADDRESS "0.0.0.0"
 #define DEFAULT_THREADS 0

@@ -24,10 +24,12 @@ foreach (_variableName ${_variableNames})
 endforeach()
 
 add_subdirectory(server) # serverpool
+add_subdirectory(static) # staticcontroller
+add_subdirectory(rest) # restcontrollers
 add_subdirectory(custom) # configuration
 add_subdirectory(singleton) # singleton
 add_executable(main main.cpp)
 target_link_libraries(
     main PUBLIC 
-    serverpool configuration singleton
+    serverpool configuration singleton staticcontroller restcontrollers
     proxygen::proxygen proxygen::proxygenhttpserver jsoncpp)

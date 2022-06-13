@@ -1,4 +1,7 @@
 #include "ServerPool.hpp"
+#include "../static/StaticControllerFactory.hpp"
+#include "../rest/RestControllerFactory.hpp"
+
 
 namespace server {
 
@@ -51,7 +54,8 @@ namespace server {
         // setup controllers
         options.handlerFactories =
             proxygen::RequestHandlerChain()
-                .addThen<StaticControllerFactory>()
+                .addThen<static_engine::StaticControllerFactory>()
+                .addThen<rest::RestControllerFactory>()
                 .build();
         options.h2cEnabled = true;
 
