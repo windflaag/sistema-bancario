@@ -1,7 +1,7 @@
 @all:
 	echo -e "nothing to do"
 
-build:
+compile:
 	./build_project.sh
 
 install:
