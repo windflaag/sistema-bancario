@@ -3,5 +3,13 @@
         "serverPort" : 8080,
         "serverAddress": "0.0.0.0",
         "serverThreads" : 16
+    },
+    
+    "StaticEngine": {
+        "basePath": "./static"
+    },
+
+    "Database" : {
+        "filepath": "database.db"
     }
 }

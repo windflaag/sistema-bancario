@@ -1,6 +1,8 @@
 #include "ControllerFactory.hpp"
+#include "Detection.hpp"
 
 #include "../rest/ApiController.hpp"
+#include "../rest/WrongPathController.hpp"
 #include "../static_engine/StaticController.hpp"
 
 void politik::ControllerFactory::onServerStart(folly::EventBase* evb) noexcept {}
@@ -10,8 +12,15 @@ void politik::ControllerFactory::onServerStop() noexcept {}
 proxygen::RequestHandler* politik::ControllerFactory::onRequest(
         proxygen::RequestHandler* handler,
         proxygen::HTTPMessage* message) noexcept {
-    if (message->getPath() == "/api")
-        return new rest::ApiController();
+    proxygen::HTTPHeaders headers = message->getHeaders();
 
-    return new static_engine::StaticController();
+    if (politik::Detection::detectBrowserInUserAgent(headers.getSingleOrEmpty("User-Agent").c_str())) {
+        // from Static to Browser
+        return new static_engine::StaticController();
+    } else {
+        // from API to Curler
+        if (message->getPath() == "/api")
+            return new rest::ApiController();
+       return new rest::WrongPathController();
+    }
 }
