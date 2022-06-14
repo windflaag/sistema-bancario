@@ -30,12 +30,15 @@ function build_executable () {
     rm -rf ./build
     mkdir ./build
     cd ./build
-    cmake ../source -D CMAKE_C_COMPILER=$CMAKE_C_COMPILER -D CMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER $CMAKE_GENERATOR
-    $MAKE_COMMAND $MAKE_COMMAND_ARGS
-    cd ..
+
+    LAUNCHER_CMAKE="cmake ../source -D CMAKE_C_COMPILER=$CMAKE_C_COMPILER -D CMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER $CMAKE_GENERATOR"
+    LAUNCHER_MAKE="$MAKE_COMMAND $MAKE_COMMAND_ARGS"
+
+    $LAUNCHER_CMAKE && $LAUNCHER_MAKE && link_to_runtime
 }
 
 function link_to_runtime () {
+    cd ..
     cp ./build/main ./runtime/server
 }
 
@@ -44,7 +47,6 @@ function main () {
     check_clang
     check_ninja
     build_executable
-    link_to_runtime
 }
 
 main

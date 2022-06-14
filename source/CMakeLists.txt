@@ -32,8 +32,10 @@ add_executable(main
     ./politik/Detection.cpp
     ./utility/Utility.cpp
     ./rest/RestEndpointController.cpp
-    ./rest/ApiController.cpp
+    ./rest/ApiTransferController.cpp
+    ./rest/ApiAccountController.cpp
     ./rest/WrongPathController.cpp
+    ./rest/Validation.cpp
     ./static_engine/StaticController.cpp
     ./static_engine/Validation.cpp
     ./main.cpp
@@ -41,7 +43,8 @@ add_executable(main
     ./server/ServerPoolFactory.cpp
     ./custom/Config.cpp    
     ./database/Database.cpp
+    ./codec/Codec.cpp
 )
 
 target_link_libraries(
-    main PUBLIC sqlite3 proxygen::proxygen proxygen::proxygenhttpserver jsoncpp)
+    main PUBLIC sqlite3 ssl proxygen::proxygen proxygen::proxygenhttpserver jsoncpp)

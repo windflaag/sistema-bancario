@@ -10,7 +10,11 @@ namespace rest {
     }
     
     void RestEndpointController::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
-      proxygen::ResponseBuilder(downstream_).body(std::move(body)).send();
+        if (!(this->body_))
+            this->body_ = std::unique_ptr<std::string>(new std::string());
+
+        std::string nextPartOfBody = ""; body->appendTo(nextPartOfBody);
+        this->body_->append(nextPartOfBody);
     }
     
     void RestEndpointController::onEOM() noexcept {

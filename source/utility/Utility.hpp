@@ -6,9 +6,10 @@
 #include <json/json.h> 
 
 namespace utility {
-    bool findSubstring(std::string line, std::string substring);
-    bool fileExists(std::string filepath);
-    Json::Value* responseTableToJsonArray(database::responseTable* data);
+  bool findSubstring(std::string line, std::string substring);
+  bool fileExists(std::string filepath);
+  std::string readFile(std::string filepath);
+  std::string jsonToString(Json::Value json);
 }
 
 #endif

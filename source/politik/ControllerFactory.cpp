@@ -1,7 +1,8 @@
 #include "ControllerFactory.hpp"
 #include "Detection.hpp"
 
-#include "../rest/ApiController.hpp"
+#include "../rest/ApiTransferController.hpp"
+#include "../rest/ApiAccountController.hpp"
 #include "../rest/WrongPathController.hpp"
 #include "../static_engine/StaticController.hpp"
 
@@ -19,8 +20,10 @@ proxygen::RequestHandler* politik::ControllerFactory::onRequest(
         return new static_engine::StaticController();
     } else {
         // from API to Curler
-        if (message->getPath() == "/api")
-            return new rest::ApiController();
+        if (message->getPath() == "/api/account")
+            return new rest::ApiAccountController();
+        if (message->getPath() == "/api/transfer")
+            return new rest::ApiTransferController();
        return new rest::WrongPathController();
     }
 }

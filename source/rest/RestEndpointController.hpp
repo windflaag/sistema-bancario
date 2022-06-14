@@ -20,8 +20,9 @@ namespace rest {
 
       void onError(proxygen::ProxygenError err) noexcept override;
 
-     private:
-      std::unique_ptr<folly::IOBuf> body_;
+     protected:
+      // std::unique_ptr<folly::IOBuf> body_;
+      std::unique_ptr<std::string> body_;
     };
 
 }

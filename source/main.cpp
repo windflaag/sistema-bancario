@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
       ->attachServerPool(server::ServerPoolFactory::fromSingletonConfig());
 
     // init database if not exists already
-    database::createIfNotExists();
+    database::Database::createIfNotExists();
 
     // start server
     singleton::instance()->getServerPool()->run();
