@@ -18,10 +18,20 @@ int main(int argc, char **argv) {
     singleton::instance()
       ->attachServerPool(server::ServerPoolFactory::fromSingletonConfig());
 
+    // init UUIDv4 Generator
+    singleton::instance()
+      ->attachRandomizer(
+        new std::mt19937_64          
+    );
+    
     // init database if not exists already
-    database::Database::createIfNotExists();
+    try {
+        database::Database::createIfNotExists();
+    } catch(std::runtime_error &err) {
+        std::cerr << "FATAL: Cannot create database, " << err.what();
+        return 1;
+    }
 
-    // start server
-    singleton::instance()->getServerPool()->run();
-    return 0;
+    // finally start server
+    return singleton::instance()->getServerPool()->run();
 }

@@ -7,15 +7,17 @@
 
 namespace rest {
 
-    class ApiTransferController : public RestEndpointController {
-     public:
-      ApiTransferController();
-
-      void onEOM() noexcept override;
-
-      void onRequest(
-          std::unique_ptr<proxygen::HTTPMessage> headers) noexcept override;
-    };
+  class ApiTransferController : public RestEndpointController {
+  private:
+    bool alreadySent = false;
+  public:
+    ApiTransferController();
+    
+    void onEOM() noexcept override;
+    
+    void onRequest(
+		   std::unique_ptr<proxygen::HTTPMessage> headers) noexcept override;
+  };
 
 }
 

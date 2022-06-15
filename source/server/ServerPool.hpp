@@ -33,7 +33,7 @@ namespace server {
             ServerPool(int SERVER_THREADS);
             ~ServerPool();
 
-            void run();
+            int run();
     };
 
 }

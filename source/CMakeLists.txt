@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+
 set(CMAKE_MODULE_PATH
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
   "/usr/local/lib/cmake/proxygen"
@@ -26,25 +28,11 @@ foreach (_variableName ${_variableNames})
     message(STATUS "${_variableName}=${${_variableName}}")
 endforeach()
 
-add_executable(main
-    ./singleton/Singleton.cpp
-    ./politik/ControllerFactory.cpp
-    ./politik/Detection.cpp
-    ./utility/Utility.cpp
-    ./rest/RestEndpointController.cpp
-    ./rest/ApiTransferController.cpp
-    ./rest/ApiAccountController.cpp
-    ./rest/WrongPathController.cpp
-    ./rest/Validation.cpp
-    ./static_engine/StaticController.cpp
-    ./static_engine/Validation.cpp
-    ./main.cpp
-    ./server/ServerPool.cpp
-    ./server/ServerPoolFactory.cpp
-    ./custom/Config.cpp    
-    ./database/Database.cpp
-    ./codec/Codec.cpp
-)
+file(GLOB_RECURSE MY_SOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
+message(STATUS "source files: ${MY_SOURCE_FILES}")
+message(STATUS "pwd: ${CMAKE_CURRENT_SOURCE_DIR}")
+
+add_executable(main ${MY_SOURCE_FILES})
 
 target_link_libraries(
     main PUBLIC sqlite3 ssl proxygen::proxygen proxygen::proxygenhttpserver jsoncpp)

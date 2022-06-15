@@ -35,8 +35,16 @@ namespace database {
             std::string accountId,
             std::string name,
             std::string surname);
+    
     static void deleteAccount(
             std::string accountId);
+
+    static void insertTransaction(
+            std::string transactionId,
+            std::string fromID,
+            int amount,
+            std::string toID,
+            std::string timestamp);
 
     static Json::Value* getListOfAccounts();
   };

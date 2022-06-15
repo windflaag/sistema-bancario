@@ -72,9 +72,18 @@ namespace server {
 
     }
 
-    void ServerPool::run() {
-        std::thread t([&]() { this->server->start(); });
+    int ServerPool::run() {
+        int exitCode = 0;
+        std::thread t([&]() {
+            try {
+                this->server->start();
+            } catch(std::system_error &err) {
+                std::cerr << "FATAL: Cannot instance server pool, " << err.what();
+                exitCode = 1;
+            }
+        });
         t.join();
+        return exitCode;
     }
 
 }

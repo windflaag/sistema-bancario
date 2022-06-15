@@ -7,8 +7,8 @@ CMAKE_GENERATOR=""
 MAKE_COMMAND="make"
 MAKE_COMMAND_ARGS="-j$BUILD_SPEED"
 
-USE_CLANG_IF_EXISTS=yes
-USE_NINJA_IF_EXISTS=yes
+USE_CLANG_IF_EXISTS=no
+USE_NINJA_IF_EXISTS=no
 
 function check_clang () {
     if [[ -f /usr/bin/clang++ && $USE_CLANG_IF_EXISTS == yes ]]; then

@@ -1,6 +1,6 @@
 #!/bin/bash
 BUILD_SPEED=1
-NEEDED_PACKAGES="automake autoconf boost boost-libs double-conversion fmt gflags git google-glog gperf gtest jsoncpp libevent libsodium lz4 openssl python snappy sqlite zstd zlib ninja cmake libtool xz"
+NEEDED_PACKAGES="automake autoconf boost boost-libs double-conversion fmt gflags git google-glog gperf gtest jsoncpp libevent libsodium lz4 openssl python snappy sqlite zstd zlib ninja cmake libtool xz openssl"
 
 function install_repo_deps () {
     sudo pacman -Syu --needed $NEEDED_PACKAGES
