@@ -10,6 +10,8 @@ namespace utility {
   bool fileExists(std::string filepath);
   std::string readFile(std::string filepath);
   std::string jsonToString(Json::Value json);
+  int getCurrentTimeStampSeed();
+  std::string getCurrentTimeStampString();
 }
 
 #endif

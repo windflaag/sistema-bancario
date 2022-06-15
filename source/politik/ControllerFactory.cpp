@@ -3,6 +3,7 @@
 
 #include "../rest/ApiTransferController.hpp"
 #include "../rest/ApiAccountController.hpp"
+#include "../rest/ApiAccountDetailsController.hpp"
 #include "../rest/WrongPathController.hpp"
 #include "../static_engine/StaticController.hpp"
 
@@ -20,9 +21,11 @@ proxygen::RequestHandler* politik::ControllerFactory::onRequest(
         return new static_engine::StaticController();
     } else {
         // from API to Curler
-        if (message->getPath() == "/api/account")
+        if (message->getPath() == "/api/account") {
             return new rest::ApiAccountController();
-        if (message->getPath() == "/api/transfer")
+        } else if (politik::Detection::detectAccountId(message->getPath())) {
+            return new rest::ApiAccountDetailsController(message->getPath().substr(13));
+        } else if (message->getPath() == "/api/transfer")
             return new rest::ApiTransferController();
        return new rest::WrongPathController();
     }

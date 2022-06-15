@@ -9,9 +9,9 @@ create table if not exists Accounts (
 
 create table if not exists Transactions (
     transactionId varchar(80) primary key,
-    fromID varchar(20) not null,
+    fromId varchar(20),
     amount int check(amount > 0),
-    toID varchar(20) not null,
+    toId varchar(20),
     timestamp timestamp not null,
 
     foreign key (fromID) references Accounts(accountId)

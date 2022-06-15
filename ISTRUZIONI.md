@@ -49,10 +49,41 @@ make richiama lo script `install_dependencies.sh`
 ### Steps
 
 ```
-make build
+make compile
 ```
 
 make richiama lo script `build_project.sh`
+
+Dopo la compilazione si presenterà un eseguibile al percorso runtime/server. Questo è il web server REST della consegna.
+
+Di seguito lascio il risultato di `ldd runtime/server` per confrontarlo con l'eseguibile ottenuto.
+```
+linux-vdso.so.1 (0x00007ffde17bd000)
+libsqlite3.so.0 => /usr/lib/libsqlite3.so.0 (0x00007f1796e7c000)
+libssl.so.1.1 => /usr/lib/libssl.so.1.1 (0x00007f1796369000)
+libjsoncpp.so.25 => /usr/lib/libjsoncpp.so.25 (0x00007f1796e42000)
+libfmt.so.8 => /usr/lib/libfmt.so.8 (0x00007f1796348000)
+libz.so.1 => /usr/lib/libz.so.1 (0x00007f179632e000)
+libbz2.so.1.0 => /usr/lib/libbz2.so.1.0 (0x00007f179631b000)
+liblzma.so.5 => /usr/lib/liblzma.so.5 (0x00007f17962ef000)
+liblz4.so.1 => /usr/lib/liblz4.so.1 (0x00007f17962cc000)
+libsnappy.so.1 => /usr/lib/libsnappy.so.1 (0x00007f17962c0000)
+libsodium.so.23 => /usr/lib/libsodium.so.23 (0x00007f1796266000)
+libunwind.so.8 => /usr/lib/libunwind.so.8 (0x00007f179624c000)
+libzstd.so.1 => /usr/lib/libzstd.so.1 (0x00007f17961a3000)
+libcrypto.so.1.1 => /usr/lib/libcrypto.so.1.1 (0x00007f1795e00000)
+libglog.so.1 => /usr/lib/libglog.so.1 (0x00007f179616b000)
+libgflags.so.2.2 => /usr/lib/libgflags.so.2.2 (0x00007f179613e000)
+libdouble-conversion.so.3 => /usr/lib/libdouble-conversion.so.3 (0x00007f1796128000)
+libboost_context.so.1.78.0 => /usr/lib/libboost_context.so.1.78.0 (0x00007f1796123000)
+libevent-2.1.so.7 => /usr/lib/libevent-2.1.so.7 (0x00007f1795da7000)
+libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0x00007f1795a00000)
+libm.so.6 => /usr/lib/libm.so.6 (0x00007f1795cc0000)
+libgcc_s.so.1 => /usr/lib/libgcc_s.so.1 (0x00007f1796101000)
+libc.so.6 => /usr/lib/libc.so.6 (0x00007f1795600000)
+/lib64/ld-linux-x86-64.so.2 => /usr/lib64/ld-linux-x86-64.so.2 (0x00007f1796fd8000)
+libpthread.so.0 => /usr/lib/libpthread.so.0 (0x00007f17960fc000)
+```
 
 # Guida all'uso
 
@@ -62,4 +93,5 @@ Questa cartella contiene la totalità dei file che il server usa in fase di esec
 
 Questa comprende una copia dell'eseguibile compilato `server`, un file di configurazione `config.json`, una cartella `static` con tutti i file html, js, css esposti staticamente ai client.
 
-Contiene inoltre il file `database.db`, un file in formato sqlite3 che rappresenta la copia di dati software in memoria secondaria. 
+Contiene inoltre il file `database.db`, un file in formato sqlite3 che rappresenta i dati software in memoria secondaria.
+E' inoltre presente un file `database.sql` che contiene le regole SQL che il server usa per creare il database in caso di rimozione del file.

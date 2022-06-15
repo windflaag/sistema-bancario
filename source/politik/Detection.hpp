@@ -5,10 +5,11 @@
 #include "../utility/Utility.hpp"
 
 namespace politik {
-
-    class Detection {
-        public:
-            static bool detectBrowserInUserAgent(std::string userAgent);
+  
+  class Detection {
+  public:
+    static bool detectBrowserInUserAgent(std::string userAgent);
+    static bool detectAccountId(std::string path);  
     };
 }
 

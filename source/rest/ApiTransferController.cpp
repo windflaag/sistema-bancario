@@ -70,7 +70,7 @@ void rest::ApiTransferController::onEOM() noexcept {
     std::string fromId = parameters["from"].asString();
     int amount = parameters["amount"].asInt();
     std::string toId = parameters["to"].asString();
-    std::string timestamp = "15-06-2022 10:10:00";
+    std::string timestamp = utility::getCurrentTimeStampString();
 
     std::string transactionId = codec::computeUUID();
     database::Database::insertTransaction(transactionId, fromId, amount, toId, timestamp);

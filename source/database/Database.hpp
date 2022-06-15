@@ -46,7 +46,27 @@ namespace database {
             std::string toID,
             std::string timestamp);
 
+    // money goes up
+    static void insertPayment(
+            std::string transactionId,
+            std::string accountID,
+            int amount,
+            std::string timestamp);
+
+    // money goes down
+    static void insertWithdraw(
+            std::string transactionId,
+            std::string accountID,
+            int amount,
+            std::string timestamp);
+
     static Json::Value* getListOfAccounts();
+    static Json::Value* getTransactions(std::string accountId);
+    static Json::Value* getAccountMetadata(std::string accountId);
+
+    static void updateName(std::string accountId, std::string name);
+    static void updateSurname(std::string accountId, std::string surname);
+    static void updateNameAndSurname(std::string accountId, std::string name, std::string surname);
   };
 }
 

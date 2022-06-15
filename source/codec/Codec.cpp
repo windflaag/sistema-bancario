@@ -27,7 +27,8 @@ std::string codec::sha256(std::string text) {
 
 std::string codec::computeAccountId(std::string name,
                                     std::string surname) {
-    return codec::sha256(name + surname).substr(0, 20);
+  auto randomizer = singleton::instance()->getRandomizer();
+  return codec::sha256(name + surname + std::to_string(randomizer->operator()())).substr(0, 20);
 }
 
 inline void write_int64_into_buf(long long int64, unsigned char *buf) {

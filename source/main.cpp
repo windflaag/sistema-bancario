@@ -2,6 +2,7 @@
 #include "custom/Config.hpp"
 #include "singleton/Singleton.hpp"
 #include "database/Database.hpp"
+#include "utility/Utility.hpp"
 
 void init_folly (int argc, char **argv) {
     folly::init(&argc, &argv, true);
@@ -18,11 +19,10 @@ int main(int argc, char **argv) {
     singleton::instance()
       ->attachServerPool(server::ServerPoolFactory::fromSingletonConfig());
 
-    // init UUIDv4 Generator
-    singleton::instance()
-      ->attachRandomizer(
-        new std::mt19937_64          
-    );
+    // init Random Number Generator
+    auto randomizer = new std::mt19937_64();
+    randomizer->seed(utility::getCurrentTimeStampSeed());
+    singleton::instance()->attachRandomizer(randomizer);
     
     // init database if not exists already
     try {

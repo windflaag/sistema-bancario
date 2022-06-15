@@ -24,5 +24,8 @@ clean:
 	rm -rf deps && mkdir deps
 	rm -rf build && mkdir build
 
+rebase:
+	rm -rf ./runtime/database.db
+
 tanze:
 	./tanzomat.py

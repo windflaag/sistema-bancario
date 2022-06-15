@@ -129,13 +129,98 @@ void database::Database::insertTransaction(
 					   std::string timestamp) {
   database::Database::issueQuery(
 				 "begin transaction; update Accounts set credit = credit - " +
-				 std::to_string(amount) + "where accountId = \"" + fromId +
+				 std::to_string(amount) + " where accountId = \"" + fromId +
 				 "\"; update Accounts set credit = credit + " + std::to_string(amount) +
-				 "where accountId = \"" + toId +
+				 " where accountId = \"" + toId +
 				 "\"; insert into Transactions values (\"" + transactionId +
 				 "\", \"" + fromId +
 				 "\", \"" + std::to_string(amount) +
 				 "\", \"" + toId +
 				 "\", \"" + timestamp +
 				 "\"); commit;");
+}
+
+Json::Value* database::Database::getTransactions(std::string accountId) {
+  Json::Value* data = database::Database::launchQuery(
+						      "select transactionId from Transactions where (fromId = \"" + accountId +
+						      "\") or (toId = \"" + accountId +
+						      "\" and fromId is NULL) order by timestamp;"
+						      );
+
+  Json::Value* array = new Json::Value(Json::arrayValue);
+  for (int i = 0; i < data->size(); i++) {
+    array->operator[](i) = data->operator[](i)["transactionId"];
+  }
+
+  delete data;
+  return array;
+}
+
+Json::Value* database::Database::getAccountMetadata(std::string accountId) {
+  Json::Value* data = database::Database::launchQuery("select * from Accounts where accountId = \"" + accountId + "\"");
+
+  if (data->size() == 0) {
+    delete data;
+    throw std::runtime_error("");
+  }
+  
+  Json::Value* metadata = new Json::Value(Json::objectValue);
+  metadata->operator[]("name") = data->operator[](0)["name"];
+  metadata->operator[]("surname") = data->operator[](0)["surname"];
+  metadata->operator[]("credit") = data->operator[](0)["credit"];
+  delete data;
+
+  return metadata;
+}
+
+void database::Database::insertPayment(
+					   std::string transactionId,
+					   std::string accountId,
+					   int amount,
+					   std::string timestamp) { 
+  database::Database::issueQuery(
+				 "begin transaction; update Accounts set credit = credit + " + std::to_string(amount) +
+				 " where accountId = \"" + accountId +
+				 "\"; insert into Transactions values (\"" + transactionId +
+				 "\", NULL, \"" + std::to_string(amount) +
+				 "\", \"" + accountId +
+				 "\", \"" + timestamp +
+				 "\"); commit;");
+}
+
+void database::Database::insertWithdraw(
+					   std::string transactionId,
+					   std::string accountId,
+					   int amount,
+					   std::string timestamp) {
+  database::Database::issueQuery(
+				 "begin transaction; update Accounts set credit = credit - " +
+				 std::to_string(amount) + " where accountId = \"" + accountId +
+				 "\"; insert into Transactions values (\"" + transactionId +
+				 "\", \"" + accountId +
+				 "\", \"" + std::to_string(amount) +
+				 "\", NULL, \"" + timestamp +
+				 "\"); commit;");
+}
+
+void database::Database::updateName(std::string accountId, std::string name) {
+  database::Database::issueQuery(
+				 "update Accounts set name = \"" + name +
+				 "\" where accountId = \"" + accountId + "\";"
+				 );
+}
+
+void database::Database::updateSurname(std::string accountId, std::string surname) {
+  database::Database::issueQuery(
+				 "update Accounts set surname = \"" + surname +
+				 "\" where accountId = \"" + accountId + "\";"
+				 );
+}
+
+void database::Database::updateNameAndSurname(std::string accountId, std::string name, std::string surname) {
+  database::Database::issueQuery(
+				 "update Accounts set name = \"" + name +
+				 "\", surname = \"" + surname +
+				 "\" where accountId = \"" + accountId + "\";"
+				 );
 }
