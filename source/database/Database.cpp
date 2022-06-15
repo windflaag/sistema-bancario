@@ -21,7 +21,7 @@ inline std::string getInitFilePath() {
   return databaseConfig.get("initPath", DEFAULT_INIT_PATH).asString();
 }
 
-int database::Database::processResponse(void *result, int length, char **values, char **columns) {
+int database::processResponse(void *result, int length, char **values, char **columns) {
   Json::Value* arrayOfResults = (Json::Value*) result;
 
   Json::Value object = Json::objectValue;
@@ -33,7 +33,7 @@ int database::Database::processResponse(void *result, int length, char **values,
   return 0;
 }
 
-Json::Value* database::Database::launchQuery(std::string query) {
+Json::Value* database::launchQuery(std::string query) {
   Json::Value* arrayOfResults = new Json::Value(Json::arrayValue);
   std::string filepath = getDatabaseFilePath();
 
@@ -50,7 +50,7 @@ Json::Value* database::Database::launchQuery(std::string query) {
   char* errorMessage = NULL;
   if (SQLITE_OK != sqlite3_exec(
 				db, query.c_str(),
-				database::Database::processResponse,
+				database::processResponse,
 				(void*) arrayOfResults, &errorMessage)) {
     std::fprintf(stderr, "sql error occurred: %s\n", errorMessage);
     sqlite3_free(errorMessage);
@@ -62,18 +62,18 @@ Json::Value* database::Database::launchQuery(std::string query) {
   return arrayOfResults;
 }
 
-void database::Database::issueQuery(std::string query) {
+void database::issueQuery(std::string query) {
   try {
-    Json::Value *arr = database::Database::launchQuery(query);
+    Json::Value *arr = database::launchQuery(query);
     delete arr;
   } catch(std::runtime_error& err) {
     throw err;
   }
 }
 
-void database::Database::issueSQLFile(std::string filepath) {
+void database::issueSQLFile(std::string filepath) {
   try {
-    database::Database::issueQuery(
+    database::issueQuery(
 				   utility::readFile(filepath)
 				   );
   } catch(std::runtime_error& err) {
@@ -81,17 +81,17 @@ void database::Database::issueSQLFile(std::string filepath) {
   }
 }
 
-void database::Database::createIfNotExists() {
+void database::createIfNotExists() {
   if (!(utility::fileExists(getDatabaseFilePath()))) {
-    database::Database::issueSQLFile(getInitFilePath());
+    database::issueSQLFile(getInitFilePath());
   };
 }
 
-void database::Database::insertAccount(
+void database::insertAccount(
 				       std::string accountId,
 				       std::string name,
 				       std::string surname) {
-  database::Database::issueQuery(
+  database::issueQuery(
 				 "insert into Accounts (accountId, name, surname) values (\"" +
 				 accountId + "\", \"" +
 				 name + "\", \"" +
@@ -99,21 +99,22 @@ void database::Database::insertAccount(
 				 );
 }
 
-void database::Database::deleteAccount(
+void database::deleteAccount(
 				       std::string accountId) {
-  database::Database::issueQuery(
+  database::issueQuery(
 				 "delete from Accounts where accountId = \"" +
 				 accountId + "\";"
 				 ); 
 }
 
-Json::Value* database::Database::getListOfAccounts() {
-  Json::Value* data = database::Database::launchQuery(
+Json::Value* database::getListOfAccounts() {
+  Json::Value* data = database::launchQuery(
 						      "select accountId from Accounts"
 						      );
 
   Json::Value* array = new Json::Value(Json::arrayValue);
-  for (int i = 0; i < data->size(); i++) {
+  int length = data->size();
+  for (int i = 0; i < length; i++) {
     array->operator[](i) = data->operator[](i)["accountId"];
   }
 
@@ -121,13 +122,13 @@ Json::Value* database::Database::getListOfAccounts() {
   return array;
 }
 
-void database::Database::insertTransaction(
+void database::insertTransaction(
 					   std::string transactionId,
 					   std::string fromId,
 					   int amount,
 					   std::string toId,
 					   std::string timestamp) {
-  database::Database::issueQuery(
+  database::issueQuery(
 				 "begin transaction; update Accounts set credit = credit - " +
 				 std::to_string(amount) + " where accountId = \"" + fromId +
 				 "\"; update Accounts set credit = credit + " + std::to_string(amount) +
@@ -140,15 +141,16 @@ void database::Database::insertTransaction(
 				 "\"); commit;");
 }
 
-Json::Value* database::Database::getTransactions(std::string accountId) {
-  Json::Value* data = database::Database::launchQuery(
+Json::Value* database::getTransactions(std::string accountId) {
+  Json::Value* data = database::launchQuery(
 						      "select transactionId from Transactions where (fromId = \"" + accountId +
 						      "\") or (toId = \"" + accountId +
 						      "\" and fromId is NULL) order by timestamp;"
 						      );
 
   Json::Value* array = new Json::Value(Json::arrayValue);
-  for (int i = 0; i < data->size(); i++) {
+  int length = data->size();
+  for (int i = 0; i < length; i++) {
     array->operator[](i) = data->operator[](i)["transactionId"];
   }
 
@@ -156,8 +158,8 @@ Json::Value* database::Database::getTransactions(std::string accountId) {
   return array;
 }
 
-Json::Value* database::Database::getAccountMetadata(std::string accountId) {
-  Json::Value* data = database::Database::launchQuery("select * from Accounts where accountId = \"" + accountId + "\"");
+Json::Value* database::getAccountMetadata(std::string accountId) {
+  Json::Value* data = database::launchQuery("select * from Accounts where accountId = \"" + accountId + "\"");
 
   if (data->size() == 0) {
     delete data;
@@ -173,12 +175,12 @@ Json::Value* database::Database::getAccountMetadata(std::string accountId) {
   return metadata;
 }
 
-void database::Database::insertPayment(
+void database::insertPayment(
 					   std::string transactionId,
 					   std::string accountId,
 					   int amount,
 					   std::string timestamp) { 
-  database::Database::issueQuery(
+  database::issueQuery(
 				 "begin transaction; update Accounts set credit = credit + " + std::to_string(amount) +
 				 " where accountId = \"" + accountId +
 				 "\"; insert into Transactions values (\"" + transactionId +
@@ -188,12 +190,12 @@ void database::Database::insertPayment(
 				 "\"); commit;");
 }
 
-void database::Database::insertWithdraw(
+void database::insertWithdraw(
 					   std::string transactionId,
 					   std::string accountId,
 					   int amount,
 					   std::string timestamp) {
-  database::Database::issueQuery(
+  database::issueQuery(
 				 "begin transaction; update Accounts set credit = credit - " +
 				 std::to_string(amount) + " where accountId = \"" + accountId +
 				 "\"; insert into Transactions values (\"" + transactionId +
@@ -203,24 +205,39 @@ void database::Database::insertWithdraw(
 				 "\"); commit;");
 }
 
-void database::Database::updateName(std::string accountId, std::string name) {
-  database::Database::issueQuery(
+void database::updateName(std::string accountId, std::string name) {
+  database::issueQuery(
 				 "update Accounts set name = \"" + name +
 				 "\" where accountId = \"" + accountId + "\";"
 				 );
 }
 
-void database::Database::updateSurname(std::string accountId, std::string surname) {
-  database::Database::issueQuery(
+void database::updateSurname(std::string accountId, std::string surname) {
+  database::issueQuery(
 				 "update Accounts set surname = \"" + surname +
 				 "\" where accountId = \"" + accountId + "\";"
 				 );
 }
 
-void database::Database::updateNameAndSurname(std::string accountId, std::string name, std::string surname) {
-  database::Database::issueQuery(
+void database::updateNameAndSurname(std::string accountId, std::string name, std::string surname) {
+  database::issueQuery(
 				 "update Accounts set name = \"" + name +
 				 "\", surname = \"" + surname +
 				 "\" where accountId = \"" + accountId + "\";"
 				 );
+}
+
+Json::Value* database::getCredit(std::string accountId) {
+    Json::Value* arr = database::launchQuery(
+            "select credit from Accounts where accountId = \"" +
+            accountId + "\";"
+            );
+
+    if (arr->size() == 0)
+        throw std::runtime_error("");
+
+    Json::Value* result = new Json::Value(std::stoi(arr->operator[](0)["credit"].asString()));
+    
+    delete arr;
+    return result;
 }

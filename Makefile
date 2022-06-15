@@ -5,13 +5,13 @@ compile:
 	./build_project.sh
 
 cmake:
-	cd build && cmake ../source && cd ..
+	clear && cd build && cmake ../source && cd ..
 
 make:
-	make -C build && cp build/main runtime/server
+	clear && make -C build && cp build/main runtime/server
 
 ninja:
-	ninja -C build && cp build/main runtime/server
+	clear && ninja -C build && cp build/main runtime/server
 
 install:
 	./install_dependencies.sh

@@ -10,7 +10,10 @@
     },
 
     "Database" : {
-        "filePath": "database.db",
-        "initPath": "database.sql"
+        "filePath": "./database.db",
+        "initPath": "./database.sql"
+    },
+    "Logger": {
+        "logPath": "./log/"
     }
 }

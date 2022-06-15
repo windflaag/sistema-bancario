@@ -15,6 +15,9 @@ int main(int argc, char **argv) {
     singleton::instance()
       ->attachConfig(new custom::Config("config.json"));
 
+    singleton::instance()
+      ->attachLogger(std::make_shared<logging::Logger>());
+
     // create server pool
     singleton::instance()
       ->attachServerPool(server::ServerPoolFactory::fromSingletonConfig());
@@ -26,7 +29,7 @@ int main(int argc, char **argv) {
     
     // init database if not exists already
     try {
-        database::Database::createIfNotExists();
+        database::createIfNotExists();
     } catch(std::runtime_error &err) {
         std::cerr << "FATAL: Cannot create database, " << err.what();
         return 1;

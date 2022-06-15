@@ -127,13 +127,14 @@ def testApi(SIZE = 7):
     for _ in range(0, SIZE):
         tanzomat.addAccount(f"{random_name()}", f"{random_name()}")
     accounts = tanzomat.getAccountList();
-    print(f"accounts: {accounts}")
 
     print()
 
     tanzomat.payment(3 * len(accounts[1:]), accounts[0])
     for destination in accounts[1:]:
         tanzomat.transfer(accounts[0], 2, destination)
+    tanzomat.withdraw(len(accounts[1:]), accounts[0]);
+    tanzomat.payment(1, accounts[0]);
 
     print()
     

@@ -19,6 +19,10 @@ void singleton::Singleton::attachConfig(custom::Config* configuration) {
     this->configuration = configuration;
 }
 
+void singleton::Singleton::attachLogger(std::shared_ptr<logging::Logger> logger) {
+    this->logger = logger;
+}
+
 void singleton::Singleton::attachServerPool(server::ServerPool* serverpool) {
     if (this->serverpool)
         delete this->serverpool;
@@ -41,6 +45,10 @@ server::ServerPool* singleton::Singleton::getServerPool() {
 
 std::mt19937_64* singleton::Singleton::getRandomizer() {
     return this->randomizer;
+}
+
+std::shared_ptr<logging::Logger> singleton::Singleton::getLogger() {
+    return this->logger;
 }
 
 singleton::Singleton* singleton::instance() {

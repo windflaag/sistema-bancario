@@ -21,7 +21,7 @@ namespace rest {
       proxygen::ResponseBuilder(downstream_).sendWithEOM();
     }
     
-    void RestEndpointController::onUpgrade(proxygen::UpgradeProtocol protocol) noexcept {
+    void RestEndpointController::onUpgrade(proxygen::UpgradeProtocol /*protocol*/) noexcept {
       // handler doesn't support upgrades
     }
     
@@ -29,7 +29,7 @@ namespace rest {
       delete this;
     }
 
-    void RestEndpointController::onError(proxygen::ProxygenError err) noexcept {
+    void RestEndpointController::onError(proxygen::ProxygenError /*err*/) noexcept {
       delete this;
     }
 

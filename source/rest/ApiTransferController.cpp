@@ -72,12 +72,32 @@ void rest::ApiTransferController::onEOM() noexcept {
     std::string toId = parameters["to"].asString();
     std::string timestamp = utility::getCurrentTimeStampString();
 
+    Json::Value* currentCredit = database::getCredit(fromId);
+    if (currentCredit->asInt() < amount) {
+        delete currentCredit;
+        throw std::runtime_error("");
+    } else {
+        delete currentCredit;
+    }
+
     std::string transactionId = codec::computeUUID();
-    database::Database::insertTransaction(transactionId, fromId, amount, toId, timestamp);
+    database::insertTransaction(transactionId, fromId, amount, toId, timestamp);
+
+    Json::Value* newCreditFrom = database::getCredit(fromId);
+    Json::Value* newCreditTo = database::getCredit(toId);
+
+    Json::Value object = Json::objectValue;
+    object[fromId] = *newCreditFrom;
+    object[toId] = *newCreditTo;
+    object["transaction"] = transactionId;
+    
+    delete newCreditFrom; delete newCreditTo;
+    std::string result = utility::jsonToString(object);
 
     builder
       .status(201, "Created")
-      .body(transactionId)
+      .header("Content-Type", "application/json")
+      .body(result)
       .sendWithEOM();
     return;
   } catch(...) {

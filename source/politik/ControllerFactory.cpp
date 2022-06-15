@@ -7,12 +7,12 @@
 #include "../rest/WrongPathController.hpp"
 #include "../static_engine/StaticController.hpp"
 
-void politik::ControllerFactory::onServerStart(folly::EventBase* evb) noexcept {}
+void politik::ControllerFactory::onServerStart(folly::EventBase* /*evb*/) noexcept {}
 
 void politik::ControllerFactory::onServerStop() noexcept {}
 
 proxygen::RequestHandler* politik::ControllerFactory::onRequest(
-        proxygen::RequestHandler* handler,
+        proxygen::RequestHandler* /*handler*/,
         proxygen::HTTPMessage* message) noexcept {
     proxygen::HTTPHeaders headers = message->getHeaders();
 

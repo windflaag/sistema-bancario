@@ -18,7 +18,7 @@ void rest::ApiAccountController::onRequest
   if (req->getMethod() == proxygen::HTTPMethod::GET) {
     this->alreadySent = true;
     try {
-      Json::Value* data = database::Database::getListOfAccounts();
+      Json::Value* data = database::getListOfAccounts();
 
       Json::Value object = Json::objectValue;
       object["accounts"] = *data;
@@ -28,6 +28,7 @@ void rest::ApiAccountController::onRequest
 
       builder
 	.status(200, "OK")
+    .header("Content-Type", "application/json")
 	.body(result)
 	.send();
       return;
@@ -53,7 +54,7 @@ void rest::ApiAccountController::onRequest
     try {
       std::string accountId = req->getQueryParam("id");
 
-      database::Database::deleteAccount(accountId);
+      database::deleteAccount(accountId);
            
       builder
 	.status(200, "OK")
@@ -116,7 +117,7 @@ void rest::ApiAccountController::onEOM() noexcept {
 						    name, surname
 						    );
 
-    database::Database::insertAccount(accountId, name, surname);
+    database::insertAccount(accountId, name, surname);
 
     builder
       .status(201, "Created")

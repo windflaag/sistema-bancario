@@ -27,7 +27,7 @@ void rest::ApiAccountDetailsController::onRequest
   } else if (req->getMethod() == proxygen::HTTPMethod::GET) {
     Json::Value* metadata = NULL;
     try {
-      metadata = database::Database::getAccountMetadata(this->accountId);
+      metadata = database::getAccountMetadata(this->accountId);
     } catch(...) {
       this->alreadySent = true;
       builder
@@ -38,7 +38,7 @@ void rest::ApiAccountDetailsController::onRequest
 
     Json::Value* transactions = NULL;
     try {
-      transactions = database::Database::getTransactions(this->accountId);
+      transactions = database::getTransactions(this->accountId);
     } catch(...) {
       this->alreadySent = true;
       builder
@@ -60,12 +60,13 @@ void rest::ApiAccountDetailsController::onRequest
     builder
       .status(200, "OK")
       .header("X-Sistema-Bancario", headerValue)
+      .header("Content-Type", "application/json")
       .body(result)
       .send();
   } else if (req->getMethod() == proxygen::HTTPMethod::HEAD) {
     Json::Value* metadata = NULL;
     try {
-      metadata = database::Database::getAccountMetadata(this->accountId);
+      metadata = database::getAccountMetadata(this->accountId);
     } catch(...) {
       this->alreadySent = true;
       builder
@@ -142,13 +143,31 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
 
         std::string transactionId = codec::computeUUID();
         if (amount > 0)
-            database::Database::insertPayment(transactionId, this->accountId, amount, timestamp);
-        else
-            database::Database::insertWithdraw(transactionId, this->accountId, -amount, timestamp);
+            database::insertPayment(transactionId, this->accountId, amount, timestamp);
+        else {
+            Json::Value* currentCredit = database::getCredit(this->accountId);
+            if (currentCredit->asInt() < amount) {
+                delete currentCredit;
+                throw std::runtime_error("");
+            } else {
+                delete currentCredit;
+            }
+            database::insertWithdraw(transactionId, this->accountId, -amount, timestamp);
+        }
+
+        Json::Value* newCredit = database::getCredit(this->accountId);
+
+        Json::Value object = Json::objectValue;
+        object["credit"] = *newCredit;
+        object["transaction"] = transactionId;
+        
+        delete newCredit;
+        std::string result = utility::jsonToString(object);
 
         builder
           .status(201, "Created")
-          .body(transactionId)
+          .header("Content-Type", "application/json")
+          .body(result)
           .sendWithEOM();
         return;
       } catch(...) {
@@ -177,7 +196,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
         std::string name = parameters["name"].asString();
         std::string surname = parameters["surname"].asString();
 
-        database::Database::updateNameAndSurname(this->accountId, name, surname);
+        database::updateNameAndSurname(this->accountId, name, surname);
 
         builder
           .status(200, "OK")
@@ -220,7 +239,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
       try {
         std::string name = parameters["name"].asString();
 
-        database::Database::updateName(this->accountId, name);
+        database::updateName(this->accountId, name);
 
         builder
           .status(200, "OK")
@@ -246,7 +265,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
       try {
         std::string surname = parameters["surname"].asString();
 
-        database::Database::updateSurname(this->accountId, surname);
+        database::updateSurname(this->accountId, surname);
 
         builder
           .status(200, "OK")
