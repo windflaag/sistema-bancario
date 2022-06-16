@@ -57,7 +57,7 @@ void rest::ApiAccountDetailsController::onRequest
       .header("X-Sistema-Bancario", headerValue)
       .header("Content-Type", "application/json")
       .body(result)
-      .send();
+      .sendWithEOM();
   } else if (req->getMethod() == proxygen::HTTPMethod::HEAD) {
     Json::Value* metadata = NULL;
     try {
@@ -76,7 +76,7 @@ void rest::ApiAccountDetailsController::onRequest
     builder
       .status(200, "OK")
       .header("X-Sistema-Bancario", headerValue)
-      .send();
+      .sendWithEOM();
   } else if (req->getMethod() == proxygen::HTTPMethod::PUT) {
     // placeholder
     this->invokedMethod = proxygen::HTTPMethod::PUT;
