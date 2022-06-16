@@ -1,0 +1,149 @@
+:root {
+    --color-dark-blue: #1234ff;
+    --color-white: #ffffff;
+    --color-dark-white: #eeeeee;
+    --color-light-green: #009578;
+    --color-light-red: #aa0707;
+    --color-yellow: #bfa004;
+    --color-dark-yellow: #877103;
+    --theme: var(--color-dark-blue);
+    --theme-background: var(--theme);
+    --anti-background: var(--color-white);
+    --super-background: var(--color-dark-white);
+    --theme-color: var(--theme);
+    --anti-color: var(--color-white);
+    --super-color: var(--color-black);
+    --even-color: var(--color-yellow);
+    --odd-color: var(--color-dark-yellow);
+}
+
+body {
+    background: rgba(20, 20, 131, 0.88);
+}
+
+div#screen {
+    font-family: sans-serif;
+    padding: 1%;
+    max-width: 100%;
+}
+
+/* boards */
+
+div.infoBoard {
+    margin: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+div.infoCard {
+    background: var(--super-background);
+    max-width: 100%;
+    box-sizing: border-box;
+    height: auto;
+    border-radius: 5px;
+    border: none;
+    border-collapse: collapse;
+}
+
+div.infoCard p {
+    padding: 10px 15px;
+    text-align: center;
+    color: var(--super-color);
+    font-size: 15px;
+}
+
+div.infoCard p:first-child {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+/* tables */
+
+table.transactionTable {
+    margin: 0.5%;
+    font-size: 12px;
+    font-weight: normal;
+    width: 99%;
+    max-width: 99%;
+    /*white-space: nowrap;*/
+    /*background-color: white;*/
+    border-radius: 5px;
+    border: none;
+    border-collapse: collapse;
+}
+
+table.transactionTable td, table.transactionTable th {
+    text-align: center;
+    padding: 8px;
+}
+
+table.transactionTable td {
+    border: 1px solid #000000;
+    font-size: 14px;
+}
+
+table.transactionTable thead th {
+    color: #ffffff;
+    background: var(--even-color);
+    font-size: 18px;
+}
+
+table.transactionTable tbody {
+    background: #ffffff;
+}
+
+table.transactionTable tbody tr:first-child {
+    font-weight: bold;
+}
+
+table.transactionTable thead th:nth-child(odd) {
+    color: #ffffff;
+    background: var(--odd-color);
+}
+
+table.transactionTable tr.transfer {
+    background: #f8f8f8;
+}
+
+table.transactionTable td.preliev {
+    color: red;
+}
+
+table.transactionTable td.deposit {
+    color: green;
+}
+
+/* forms */
+
+div.inputForm {
+    margin-right: 25%;
+    margin-left: 25%;
+    display: grid;
+    text-align: center;
+    background: lightblue;
+}
+
+div.inputForm label {
+    width: 96%;
+    margin: 3%;
+    font-size: 17;
+}
+
+div.inputForm input {
+    margin: 3%;
+    font-size: 12;
+    border-collapse: collapse;
+    border: none;
+    border-radius: 5px;
+    width: 96%;
+}
+
+div.inputForm button {
+    margin: 3%;
+    border-collapse: collapse;
+    border: none;
+    border-radius: 3.2px;
+    width: 96%;
+    background: darkgreen;
+}

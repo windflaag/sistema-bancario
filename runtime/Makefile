@@ -2,7 +2,7 @@
 	echo -e "nothing to do"
 
 run:
-	./server
+	./server &
 
 clean:
 	rm -rf ./database.db

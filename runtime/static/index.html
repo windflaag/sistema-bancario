@@ -1,19 +1,25 @@
 <html>
   <head>
     <link rel="stylesheet" href="css/index.css"/>
+    <link rel="stylesheet" href="css/reset.css"/>
     <title>Sistema Bancario</title>
     <link rel="icon" href="img/favicon.png">
   </head>
   <script src="js/index.js"></script>
   <body onload="initPage()">
     <div id="screen">
+      <div class="inputForm">
+	<label for="inputAccountId">insert account ID</label>
+	<input type="text" name="inputAccountId" id="inputAccountId" placeholder="" value=""></input>
+	<button>SEND</button>
+      </div>
       <div class="infoBoard">
 	<div class="infoCard">
-	  <p>Name & Surname</p>
+	  <p>identity</p>
 	  <p>Francesco Refolli</p>
 	</div>
 	<div class="infoCard">
-	  <p>AccountId</p>
+	  <p>AccountID</p>
 	  <p>0</p>
 	</div>
 	<div class="infoCard">
@@ -24,29 +30,29 @@
       <table class="transactionTable">
 	<thead>
 	  <tr>
-	    <th>transactionId</th>
-	    <th>from</th>
+	    <th>transactionID</th>
+	    <th>timestamp</th>
 	    <th>amount</th>
 	    <th>to</th>
 	  </tr>
 	</thead>
 	<tbody>
-	  <tr class="transfer">
+	  <tr>
 	    <td>2</td>
-	    <td>0</td>
-	    <td>-21</td>
+	    <td>2</td>
+	    <td class="preliev">-21</td>
 	    <td>0</td>
 	  </tr>
-	  <tr class="withdraw">
+	  <tr>
 	    <td>1</td>
-	    <td></td>
-	    <td>-21</td>
+	    <td>1</td>
+	    <td class="preliev">-21</td>
 	    <td></td>
 	  </tr>
-	  <tr class="payment">
+	  <tr>
 	    <td>0</td>
-	    <td></td>
-	    <td>+42</td>
+	    <td>0</td>
+	    <td class="deposit">+42</td>
 	    <td></td>
 	  </tr>
 	</tbody>
