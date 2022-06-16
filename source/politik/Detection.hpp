@@ -6,11 +6,11 @@
 
 namespace politik {
   
-  class Detection {
-  public:
-    static bool detectBrowserInUserAgent(std::string userAgent);
-    static bool detectAccountId(std::string path);  
-    };
+  namespace detection {
+    bool detectBrowserInUserAgent(std::string userAgent);
+    bool detectAccountId(std::string path);  
+    bool detectStatic(std::string path);  
+  }
 }
 
 #endif

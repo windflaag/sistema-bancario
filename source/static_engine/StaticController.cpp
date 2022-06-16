@@ -1,10 +1,11 @@
 #include "StaticController.hpp"
 #include "Validation.hpp"
+#include "../singleton/Singleton.hpp"
 
 namespace static_engine {
 
-  StaticController::StaticController() {
-    //
+  StaticController::StaticController(std::string filepath) {
+    this->filepath = filepath;
   }
 
   void StaticController::onRequest(std::unique_ptr<proxygen::HTTPMessage> headers) noexcept {
@@ -16,22 +17,19 @@ namespace static_engine {
 	.sendWithEOM();
       return;
     }
-
-    std::string filepath = headers->getPathAsStringPiece().data();
-    // the 1 characted to be skipped is the '/'
-
+    
     try {
       // validate the path
-      filepath = Validation::validatePath(filepath);
+      this->filepath = validation::validatePath(this->filepath);
     } catch (...) {
       proxygen::ResponseBuilder(downstream_)
 	.status(403, "Forbidden")
 	.sendWithEOM();
       return;
     }
-
+    
     try {
-      // load the file into memory
+      // find file in filesystem
       file_ = std::make_unique<folly::File>(filepath);
     } catch (...) {
       proxygen::ResponseBuilder(downstream_)
@@ -40,8 +38,13 @@ namespace static_engine {
       return;
     }
 
-    // start file read and response write ITER
-    proxygen::ResponseBuilder(downstream_).status(200, "Ok").send();
+    // init response
+    proxygen::ResponseBuilder(downstream_)
+        .status(200, "Ok")
+        .header("Content-Type", validation::getContentType(this->filepath))
+        .send();
+
+    // start read iter
     readFileScheduled_ = true;
     folly::getUnsafeMutableGlobalCPUExecutor()->add(
 						    std::bind(&StaticController::readFile,
@@ -52,9 +55,11 @@ namespace static_engine {
   void StaticController::readFile(folly::EventBase* evb) {
     folly::IOBufQueue buf;
     while (file_ && !paused_) {
-      // read 4k-ish chunks and foward each one to the client
+
+      // using chuncked read
       auto data = buf.preallocate(4000, 4000);
       auto rc = folly::readNoInt(file_->fd(), data.first, data.second);
+
       if (rc < 0) {
 	// error
 	VLOG(4) << "Read error=" << rc;

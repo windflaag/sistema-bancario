@@ -16,17 +16,30 @@ proxygen::RequestHandler* politik::ControllerFactory::onRequest(
         proxygen::HTTPMessage* message) noexcept {
     proxygen::HTTPHeaders headers = message->getHeaders();
 
-    if (politik::Detection::detectBrowserInUserAgent(headers.getSingleOrEmpty("User-Agent").c_str())) {
+    if (politik::detection::detectBrowserInUserAgent(headers.getSingleOrEmpty("User-Agent").c_str())) {
         // from Static to Browser
-        return new static_engine::StaticController();
+        return new static_engine::StaticController(message->getPath());
     } else {
         // from API to Curler
         if (message->getPath() == "/api/account") {
             return new rest::ApiAccountController();
-        } else if (politik::Detection::detectAccountId(message->getPath())) {
+        } else if (politik::detection::detectAccountId(message->getPath())) {
             return new rest::ApiAccountDetailsController(message->getPath().substr(13));
-        } else if (message->getPath() == "/api/transfer")
+        } else if (message->getPath() == "/api/transfer") {
             return new rest::ApiTransferController();
+        } else if (politik::detection::detectStatic(message->getPath())) {
+            return new static_engine::StaticController(message->getPath().substr());
+        }
        return new rest::WrongPathController();
     }
 }
+
+/* 
+ * For Browser
+ *      /{path_to_file}
+ * For Curler
+ *      /api/account
+ *      /api/account/{accountId}
+ *
+ *
+ * */

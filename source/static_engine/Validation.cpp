@@ -2,7 +2,9 @@
 #include "../singleton/Singleton.hpp"
 #include "../utility/Utility.hpp"
 
-std::string static_engine::Validation::validatePath(std::string filepath) {
+#include <filesystem>
+
+std::string static_engine::validation::validatePath(std::string filepath) {
     if (utility::findSubstring(filepath, ".."))
         throw std::runtime_error("'..' in filepath");
 
@@ -12,4 +14,21 @@ std::string static_engine::Validation::validatePath(std::string filepath) {
 
     Json::Value staticEngineConfig = singleton::instance()->getConfig()->get("StaticEngine");
     return staticEngineConfig.get("basePath", DEFAULT_BASE_PATH).asString() + filepath;
+}
+
+std::string static_engine::validation::getContentType(std::string filepath) {
+    std::string extension = std::filesystem::path(filepath).extension();
+
+    if (extension == ".html") {
+        return "text/html";
+    } else if (extension == ".css") {
+        return "text/css";
+    } else if (extension == ".js") {
+        return "text/javascript";
+    } else if (extension == ".ico") {
+        return "image/vnd.microsoft.icon";
+    }
+    
+    // else threat it like a monster
+    return "text/plain";
 }

@@ -13,7 +13,7 @@ namespace static_engine {
 
     class StaticController : public proxygen::RequestHandler {
      public:
-      StaticController();
+      StaticController(std::string filepath);
 
       void onRequest(
           std::unique_ptr<proxygen::HTTPMessage> headers) noexcept override;
@@ -40,6 +40,7 @@ namespace static_engine {
       bool readFileScheduled_{false};
       std::atomic<bool> paused_{false};
       bool finished_{false};
+      std::string filepath;
     };
 
 }

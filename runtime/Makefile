@@ -7,3 +7,4 @@ run:
 clean:
 	rm -rf ./database.db
 	rm -rf ./server
+	rm -rf ./log && mkdir ./log
