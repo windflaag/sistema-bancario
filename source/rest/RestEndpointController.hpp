@@ -5,7 +5,6 @@
 #include <proxygen/httpserver/RequestHandler.h>
 
 namespace rest {
-
     class RestEndpointController : public proxygen::RequestHandler {
      public:
       explicit RestEndpointController();

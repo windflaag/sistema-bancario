@@ -83,3 +83,36 @@ std::string codec::computeUUID() {
   
   return arrangeUUID(output);
 }
+
+Json::Value codec::parseUrlEncoded(std::string* urlencoded) {
+    Json::Value parameters;
+    // TODO:
+    return parameters;
+}
+
+Json::Value codec::parseJSON(std::string* json) {
+  Json::Value parameters;
+  Json::Reader* text_reader = new Json::Reader();
+  if (!(text_reader->parse(*json, parameters))) {
+    delete text_reader;
+    throw std::runtime_error("");
+  }
+
+  delete text_reader;
+  return parameters;
+}
+
+Json::Value codec::parseBody(std::string* body) {
+  return codec::parseJSON(body);
+  /* was JSON and UrlEncoded, but now is JSON
+  try {
+    return codec::parseJSON(body);
+  } catch(...) {
+    try {
+      return codec::parseUrlEncoded(body);
+    } catch(...) {
+      throw std::runtime_error("");
+    }
+  }
+  */
+}

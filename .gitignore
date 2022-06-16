@@ -1,3 +1,4 @@
 build
 deps
 runtime/server
+runtime/database.db

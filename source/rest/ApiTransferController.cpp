@@ -7,6 +7,7 @@
 #include "../utility/Utility.hpp"
 #include "../codec/Codec.hpp"
 #include "Validation.hpp"
+#include "FastResponse.hpp"
 
 rest::ApiTransferController::ApiTransferController() {
   //
@@ -19,9 +20,7 @@ void rest::ApiTransferController::onRequest
     // placeholder
   } else {
     this->alreadySent = true;
-    builder
-      .status(501, "Not implemented")
-      .send();
+    rest::sendError(builder, 501, "Not Implemented", "method not implemented");
     return;
   }
 }
@@ -32,21 +31,17 @@ void rest::ApiTransferController::onEOM() noexcept {
       !(this->body_) ||
       (this->body_->size() == 0)) {
     if (!(this->alreadySent))
-      builder.status(400, "Bad Request");
-    builder.sendWithEOM();
+      rest::sendError(builder, 400, "Bad Request", "body is empty");
     return;
   }
 
   Json::Value parameters;
-  Json::Reader* text_reader = new Json::Reader();
-  if (!(text_reader->parse(*(this->body_), parameters))) {
-    builder
-      .status(400, "Bad Request")
-      .sendWithEOM();
+  try {
+      parameters = codec::parseBody(this->body_.get());
+  } catch(...) {
+    rest::sendError(builder, 400, "Bad Request", "cannot parse body");
     return;
   }
-
-  delete text_reader;
 
   if (
       (!(parameters.isObject())) ||
@@ -60,9 +55,7 @@ void rest::ApiTransferController::onEOM() noexcept {
       (! Validation::validateAmount(parameters["amount"].asInt())) ||
       (! Validation::validateId(parameters["to"].asString()))
       ) {
-    builder
-      .status(400, "Bad Request")
-      .sendWithEOM();
+    rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
     return;
   }
 
@@ -72,26 +65,23 @@ void rest::ApiTransferController::onEOM() noexcept {
     std::string toId = parameters["to"].asString();
     std::string timestamp = utility::getCurrentTimeStampString();
 
-    Json::Value* currentCredit = database::getCredit(fromId);
-    if (currentCredit->asInt() < amount) {
-        delete currentCredit;
-        throw std::runtime_error("");
-    } else {
-        delete currentCredit;
+    Json::Value* fromCredit = database::getCredit(fromId);
+    if (fromCredit->asInt() < amount) {
+      delete fromCredit;
+      rest::sendError(builder, 400, "Bad Request", "not enouth money for transaction");
+      return;
     }
 
+    Json::Value* toCredit = database::getCredit(toId);
     std::string transactionId = codec::computeUUID();
     database::insertTransaction(transactionId, fromId, amount, toId, timestamp);
 
-    Json::Value* newCreditFrom = database::getCredit(fromId);
-    Json::Value* newCreditTo = database::getCredit(toId);
-
     Json::Value object = Json::objectValue;
-    object[fromId] = *newCreditFrom;
-    object[toId] = *newCreditTo;
+    object[fromId] = fromCredit->asInt() - amount;
+    object[toId] = toCredit->asInt() + amount;
     object["transaction"] = transactionId;
     
-    delete newCreditFrom; delete newCreditTo;
+    delete fromCredit; delete toCredit;
     std::string result = utility::jsonToString(object);
 
     builder
@@ -101,9 +91,7 @@ void rest::ApiTransferController::onEOM() noexcept {
       .sendWithEOM();
     return;
   } catch(...) {
-    builder
-      .status(409, "Conflict")
-      .sendWithEOM();
+    rest::sendError(builder, 409, "Conflict", "conflict with existing data");
     return;
   }
 }

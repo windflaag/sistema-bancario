@@ -60,6 +60,7 @@ namespace database {
     Json::Value* getListOfAccounts();
     Json::Value* getTransactions(std::string accountId);
     Json::Value* getAccountMetadata(std::string accountId);
+    Json::Value* getTransactionMetadata(std::string transactionId);
     Json::Value* getCredit(std::string accountId);
 
     void updateName(std::string accountId, std::string name);

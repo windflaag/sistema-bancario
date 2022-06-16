@@ -25,8 +25,8 @@ std::string static_engine::validation::getContentType(std::string filepath) {
         return "text/css";
     } else if (extension == ".js") {
         return "text/javascript";
-    } else if (extension == ".ico") {
-        return "image/vnd.microsoft.icon";
+    } else if (extension == ".png") {
+        return "image/png";
     }
     
     // else threat it like a monster

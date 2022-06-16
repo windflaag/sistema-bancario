@@ -38,3 +38,22 @@ bool rest::Validation::validateName(std::string name) {
 bool rest::Validation::validateAmount(int amount) {
     return amount > 0;
 }
+
+bool charIsValidForUUID(char c) {
+    return (
+        (c == '-') ||
+        (c >= 'a' && c <= 'f') ||
+        (c >= '0' && c <= '9')
+    );
+}
+
+bool rest::Validation::validateUUID(std::string id) {
+    if (id.size() != 36)
+        return false;
+
+    // only check if characters are safe
+    for (char c : id)
+        if (!(charIsValidForUUID(c)))
+            return false;
+    return true;
+}

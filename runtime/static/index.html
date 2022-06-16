@@ -1,14 +1,56 @@
 <html>
-    <head>
-        <title>Sistema Bancario FERNBANK</title>
-        <link href="/static/css/index.css" rel="stylesheet"/>
-    </head>
-    
-    <script src="/static/js/index.js"></script>
-    
-    <body>
-        <h1>
-            WTF Bro, Meta sucks right, but woda nice CMakeLists.txt
-        </h1>
-    </body>
+  <head>
+    <link rel="stylesheet" href="css/index.css"/>
+    <title>Sistema Bancario</title>
+    <link rel="icon" href="img/favicon.png">
+  </head>
+  <script src="js/index.js"></script>
+  <body onload="initPage()">
+    <div id="screen">
+      <div class="infoBoard">
+	<div class="infoCard">
+	  <p>Name & Surname</p>
+	  <p>Francesco Refolli</p>
+	</div>
+	<div class="infoCard">
+	  <p>AccountId</p>
+	  <p>0</p>
+	</div>
+	<div class="infoCard">
+	  <p>Credit</p>
+	  <p>42</p>
+	</div>
+      </div>
+      <table class="transactionTable">
+	<thead>
+	  <tr>
+	    <th>transactionId</th>
+	    <th>from</th>
+	    <th>amount</th>
+	    <th>to</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr class="transfer">
+	    <td>2</td>
+	    <td>0</td>
+	    <td>-21</td>
+	    <td>0</td>
+	  </tr>
+	  <tr class="withdraw">
+	    <td>1</td>
+	    <td></td>
+	    <td>-21</td>
+	    <td></td>
+	  </tr>
+	  <tr class="payment">
+	    <td>0</td>
+	    <td></td>
+	    <td>+42</td>
+	    <td></td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+  </body>
 </html>

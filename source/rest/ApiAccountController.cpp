@@ -7,6 +7,7 @@
 #include "../utility/Utility.hpp"
 #include "../codec/Codec.hpp"
 #include "Validation.hpp"
+#include "FastResponse.hpp"
 
 rest::ApiAccountController::ApiAccountController() {
   //
@@ -28,14 +29,13 @@ void rest::ApiAccountController::onRequest
 
       builder
 	.status(200, "OK")
-    .header("Content-Type", "application/json")
+	.header("Content-Type", "application/json")
 	.body(result)
-	.send();
+	.sendWithEOM();
       return;
     } catch(...) {
-      builder
-	.status(500, "Internal Server Error")
-	.send();
+      rest::sendError(builder, 500, "Internal Server Error", "unable to fetch data");
+      return;
     }
   } else if (req->getMethod() == proxygen::HTTPMethod::POST) {
     // placeholder
@@ -45,9 +45,7 @@ void rest::ApiAccountController::onRequest
 	(! req->hasQueryParam("id")) ||
 	(! Validation::validateId(req->getQueryParam("id")))
         ) {
-      builder
-	.status(400, "Bad Request")
-	.send();
+      rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
       return;
     }
 
@@ -58,17 +56,14 @@ void rest::ApiAccountController::onRequest
            
       builder
 	.status(200, "OK")
-	.send();
+	.sendWithEOM();
     } catch(...) {
-      builder
-	.status(500, "Internal Server Error")
-	.send();
+      rest::sendError(builder, 500, "Internal Server Error", "unable to delete data");
+      return;
     }
   } else {
     this->alreadySent = true;
-    builder
-      .status(501, "Not implemented")
-      .send();
+      rest::sendError(builder, 501, "Not Implemented", "method not implemented");
     return;
   }
 }
@@ -79,21 +74,17 @@ void rest::ApiAccountController::onEOM() noexcept {
       !(this->body_) ||
       (this->body_->size() == 0)) {
     if (!(this->alreadySent))
-      builder.status(400, "Bad Request");
-    builder.sendWithEOM();
+      rest::sendError(builder, 400, "Bad Request", "body is empty");
     return;
   }
 
-  Json::Value parameters;
-  Json::Reader* text_reader = new Json::Reader();
-  if (!(text_reader->parse(*(this->body_), parameters))) {
-    builder
-      .status(400, "Bad Request")
-      .sendWithEOM();
-    return;
+ Json::Value parameters;
+  try {
+    parameters = codec::parseBody(this->body_.get());
+  } catch(...) {
+      rest::sendError(builder, 400, "Bad Request", "cannot parse body");
+      return;
   }
-
-  delete text_reader;
 
   if (
       (!(parameters.isObject())) ||
@@ -104,18 +95,14 @@ void rest::ApiAccountController::onEOM() noexcept {
       (! Validation::validateName(parameters["name"].asString())) ||
       (! Validation::validateName(parameters["surname"].asString()))
       ) {
-    builder
-      .status(400, "Bad Request")
-      .sendWithEOM();
+    rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
     return;
   }
 
   try {
     std::string name = parameters["name"].asString();
     std::string surname = parameters["surname"].asString();
-    std::string accountId = codec::computeAccountId(
-						    name, surname
-						    );
+    std::string accountId = codec::computeAccountId(name, surname);
 
     database::insertAccount(accountId, name, surname);
 
@@ -125,9 +112,7 @@ void rest::ApiAccountController::onEOM() noexcept {
       .sendWithEOM();
     return;
   } catch(...) {
-    builder
-      .status(409, "Conflict")
-      .sendWithEOM();
+      rest::sendError(builder, 409, "Conflict", "conflict with existing data");
     return;
   }
 }

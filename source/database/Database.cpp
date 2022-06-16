@@ -175,6 +175,26 @@ Json::Value* database::getAccountMetadata(std::string accountId) {
   return metadata;
 }
 
+Json::Value* database::getTransactionMetadata(std::string transactionId) {
+  Json::Value* data = database::launchQuery("select TAT.fromId as fromId, TAT.amount as amount, TAT.toId as toId, FR.credit as fromCredit, TAT.credit as toCredit from Accounts as FR join (Transactions as T join Accounts as AT on AT.accountId = T.toId) as TAT on FR.accountId = TAT.fromId where TAT.transactionId = \"" + transactionId + "\";");
+
+  if (data->size() == 0) {
+    delete data;
+    throw std::runtime_error("");
+  }
+  
+  Json::Value* metadata = new Json::Value(Json::objectValue);
+  
+  metadata->operator[]("fromId") = data->operator[](0)["fromId"];
+  metadata->operator[]("fromCredit") = std::stoi(data->operator[](0)["fromCredit"].asString());
+  metadata->operator[]("toId") = data->operator[](0)["toId"];
+  metadata->operator[]("toCredit") = std::stoi(data->operator[](0)["toCredit"].asString());
+  metadata->operator[]("amount") = std::stoi(data->operator[](0)["amount"].asString());
+  delete data;
+
+  return metadata;
+}
+
 void database::insertPayment(
 					   std::string transactionId,
 					   std::string accountId,

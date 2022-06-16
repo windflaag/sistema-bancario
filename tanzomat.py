@@ -77,7 +77,7 @@ class Tanzomat:
     def getAccountDetails(self, accountId):
         response = self.get(URL = self.api.at(f"/api/account/{accountId}"))
         if response.status_code == 200:
-            return response.text
+            return response.json()
         else:
             raise ValueError(f"getAccountDetails({accountId}) request returned {response.status_code}")
  
@@ -101,7 +101,12 @@ class Tanzomat:
             return response.text
         else:
             raise ValueError(f"reName({accountId}, {name}) request returned {response.status_code}")
-
+    
+    def divert(self, transactionId):
+        response = self.post(URL = self.api.at(f"/api/divert"), payload = { "id":transactionId })
+        if response.status_code != 201:
+            print(f"divert({transactionId}) request returned {response.status_code}, {response.json()}")
+        return response.json()
 
     def reSurname(self, accountId, surname):
         response = self.patch(URL = self.api.at(f"/api/account/{accountId}"), payload = { "surname": surname })
@@ -138,13 +143,21 @@ def testApi(SIZE = 7):
 
     print()
     
+    details = []
     for accountId in accounts:
-        print(f"<{accountId}> = {tanzomat.getAccountDetails(accountId)}")
-        tanzomat.reName(accountId, random_name())
-        tanzomat.reSurname(accountId, random_name())
-        print(f"<{accountId}> = {tanzomat.headAccountDetails(accountId)}")
         tanzomat.reNameAndSurname(accountId, random_name(), random_name())
-        print(f"<{accountId}> = {tanzomat.headAccountDetails(accountId)}")
+        details.append(tanzomat.getAccountDetails(accountId))
+        print(f"<{accountId}> = {details[-1]}")
+
+    print()
+
+    for transactionId in details[0]["transactions"][1:-2]:
+        tanzomat.divert(transactionId)
+
+    details = []
+    for accountId in accounts:
+        details.append(tanzomat.getAccountDetails(accountId))
+        print(f"<{accountId}> = {details[-1]}")
 
     print()
 

@@ -15,14 +15,18 @@ export default class Kanban {
 		return [
 			{
 				id: 1,
-				title: "Not Started"
+				title: "Back log"
 			},
 			{
 				id: 2,
-				title: "In Progress"
+				title: "Scheduled"
 			},
 			{
 				id: 3,
+				title: "In Progress"
+			},
+			{
+				id: 4,
 				title: "Completed"
 			}
 		];

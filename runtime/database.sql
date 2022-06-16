@@ -10,7 +10,7 @@ create table if not exists Accounts (
 create table if not exists Transactions (
     transactionId varchar(36) primary key,
     fromId varchar(20),
-    amount int check(amount > 0),
+    amount int check(amount >= 0),
     toId varchar(20),
     timestamp timestamp not null,
 
