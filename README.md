@@ -1,8 +1,14 @@
 # Sistema Bancario
 
+## Realizzato da
+
+- Refolli Francesco 865955
+
+## Descrizione
+
 Progetto di Sistemi Distribuiti, costruito seguendo la traccia proposta #2 (REST).
 
-La soluzione implementata integra un web server scritto in C++ con Proxygen, un database locale con SQLite3 e un front-end realizzato in Javascript.
+La soluzione implementata integra un web server scritto in C++ con Proxygen, un database locale con SQLite3 e un front-end realizzato in Javascript con JQuery.
 
 <div id="top"></div>
 <!--
