@@ -157,12 +157,12 @@ example response
 
 cambia io nome E il cognome (entrambi) di un Account specificando il nuovo nome e il nuovo cognome nel body.
 
-`curl -v -X PATCH -d "{\"name\": \"Tommaso\", \"surname\": \"Rossi\"}" localhost:8080/api/account/cb92b3e7a99e0d743a33`
+`curl -v -X PUT -d "{\"name\": \"Tommaso\", \"surname\": \"Rossi\"}" localhost:8080/api/account/cb92b3e7a99e0d743a33`
 
 example response
 ```http
 HTTP/1.1 200 OK
-Date: Fri, 17 Jun 2022 11:09:35 GMT
+Date: Fri, 17 Jun 2022 11:11:35 GMT
 Content-Length: 0
 ```
 
