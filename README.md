@@ -86,11 +86,15 @@ Distributed under the BEERWARE License. See `LICENSE` for more information.
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-[GET_BADGE]: https://img.shields.io/badge/-GET-green
-
 ### Endpoint standard (dalla Traccia 2)
 
-#### [GET_BADGE] /api/account
+[GET_SHIELD]: ![<img src="https://img.shields.io/badge/-GET-green">](https://img.shields.io/badge/-GET-green)
+[POST_SHIELD]: ![<img src="https://img.shields.io/badge/-GET-green">](https://img.shields.io/badge/-GET-green)
+[PUT_SHIELD]: ![<img src="https://img.shields.io/badge/-GET-green">](https://img.shields.io/badge/-GET-green)
+[PATCH_SHIELD]: ![<img src="https://img.shields.io/badge/-GET-green">](https://img.shields.io/badge/-GET-green)
+[DELETE_SHIELD]: ![<img src="https://img.shields.io/badge/-GET-green">](https://img.shields.io/badge/-GET-green)
+
+#### [GET_SHIELD] /api/account
 
 `curl localhost:8080/api/account`
 
@@ -104,7 +108,7 @@ example response
 }
 ```
 
-#### POST /api/account
+#### [POST_SHIELD] /api/account
 
 inserisci un nuovo account secondo i campi name e surname dentro il body in format JSON.
 
@@ -117,7 +121,7 @@ example response
 }
 ```
 
-#### DELETE /api/account?id={accountId}
+#### [DELETE_SHIELD] /api/account?id={accountId}
 
 l'accountId viene cancellato dalla tabella degli account. 
 Visto che è importante mantenere lo storico delle transazioni, la relativa tabella rimarrà intonsa
@@ -131,7 +135,7 @@ Date: Fri, 17 Jun 2022 11:09:35 GMT
 Content-Length: 0
 ```
 
-#### HEAD /api/account/{accountId}
+#### [HEAD_SHIELD] /api/account/{accountId}
 
 `curl localhost:8080/api/account/d91627ab5e086f3b4b0c``
 
@@ -143,7 +147,7 @@ X-Sistema-Bancario: Francesco;Refolli
 Content-Length: 0
 ```
 
-#### GET  /api/account/{accountId}
+#### [GET_SHIELD] /api/account/{accountId}
 
 come HEAD, ma ritorna in formato JSON i dati dell'account.
 
@@ -159,7 +163,7 @@ example response
 }
 ```
 
-#### PUT /api/account/{accountId}
+#### [PUT_SHIELD] /api/account/{accountId}
 
 cambia io nome E il cognome (entrambi) di un Account specificando il nuovo nome e il nuovo cognome nel body.
 
@@ -172,7 +176,7 @@ Date: Fri, 17 Jun 2022 11:09:35 GMT
 Content-Length: 0
 ```
 
-#### PATCH /api/account/{accountId}
+#### [PATCH_SHIELD] /api/account/{accountId}
 
 cambia io nome O il cognome (non entrambi) di un Account specificando il nuovo nome/cognome nel body.
 
@@ -185,7 +189,7 @@ Date: Fri, 17 Jun 2022 11:09:35 GMT
 Content-Length: 0
 ```
 
-#### POST /api/account/{accountId}
+#### [POST_SHIELD] /api/account/{accountId}
 
 inserisce un prelievo o un deposito, a seconda che amount sia < o >= 0.
 
@@ -201,7 +205,7 @@ example response
 }
 ```
 
-#### POST /api/transfer
+#### [POST_SHIELD] /api/transfer
 
 inserisce una transazione con amount >= 0.
 
@@ -218,15 +222,13 @@ example response
 }
 ```
 
-#### POST /api/divert
+#### [POST_SHIELD] /api/divert
 
 inserisce una transazione che inverte una transazione tra due account, il cui id è passato tramite il body, ma solo se il beneficiario originale ha abbastanza soldi per eseguire la nuova transazione.
 
 ritorna l'id della transazione e il nuovo credito degli account coinvolti.
 
-
 example response
-
 
 `curl -X POST -d "{\"id\": \"f0783c9e-4f27-4389-aff7-7b3d1e8f47a3\"}" localhost:8080/api/divert`
 
@@ -240,7 +242,7 @@ example response
 
 ### Enpoint estensione
 
-#### GET /api/transaction/{transactionId}
+#### [GET_SHIELD] /api/transaction/{transactionId}
 
 restituisce i dettagli di una transazione passata come parametro nel path.
 
