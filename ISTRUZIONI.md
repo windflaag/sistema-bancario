@@ -11,9 +11,10 @@ il processo di installazione è pensato per Arch Linux con architettura x86_64
 E' necessario avere installati Proxygen e tutte le sue dipendenze.
 
 Ho predisposto uno script bash `install_dependencies.sh` che controlla quali librerie e dipendenze non sono state installate e eventualmente le scarica e compila con `git`.
-Se si possiede un AUR helper, su AUR è presente un pacchetto che installa da sorgenti Proxygen datato 2021.
-Tutta via si *consiglia fortemente* di usare ugualmente lo script citato per controllare di soddisfare tutti i requisiti.
 
+Se si possiede un AUR helper, su AUR è presente un pacchetto che installa da sorgenti Proxygen datato 2021.
+
+Tutta via si *consiglia fortemente* di usare ugualmente lo script citato per controllare di soddisfare tutti i requisiti.
 Il primo metodo è comunque *preferibile* in quanto è quanto più 'aggiornato' e 'controllato'.
 
 E' necessario avere installati alcuni tool per c++ e librerie annesse che sono presenti nei repository ufficiali di Arch Linux. La lista è presente nei passi di installazione (e vengono installati automaticamente dal mio script)
@@ -71,3 +72,9 @@ Questa comprende una copia dell'eseguibile compilato `server`, un file di config
 
 Contiene inoltre il file `database.db`, un file in formato sqlite3 che rappresenta i dati software in memoria secondaria.
 E' inoltre presente un file `database.sql` che contiene le regole SQL che il server usa per creare il database in caso di rimozione del file.
+
+La porta di default è 8080, ma è possibile configurarla nel config.json così come il numero di thread da assegnare al server pool.
+
+## Istruzioni di esecuzione
+
+Per eseguire il progetto è sufficiente eseguire `make run` dalla cartella root del progetto. (in realtà anche da dentro la cartella `runtime`).
