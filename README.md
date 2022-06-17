@@ -9,22 +9,10 @@ La soluzione implementata integra un web server scritto in C++ con Proxygen, un 
     template from https://github.com/othneildrew/Best-README-Template.git
   -->
 
-<!-- PROJECT SHIELDS
-     [![Contributors][contributors-shield]][contributors-url]
-     [![Forks][forks-shield]][forks-url]
-     [![Stargazers][stars-shield]][stars-url]
-     [![Issues][issues-shield]][issues-url]
-     [![MIT License][license-shield]][license-url]
-     [![LinkedIn][linkedin-shield]][linkedin-url]
-  -->
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
-    <img src="runtime/static/img/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
   <h3 align="center">Sistema Bancario</h3>
 </div>
 
@@ -88,13 +76,15 @@ Distributed under the BEERWARE License. See `LICENSE` for more information.
 
 ### Endpoint standard (dalla Traccia 2)
 
-[GET_SHIELD]: ![<img src="https://img.shields.io/badge/-GET-green">](https://img.shields.io/badge/-GET-green)
-[POST_SHIELD]: ![<img src="https://img.shields.io/badge/-GET-green">](https://img.shields.io/badge/-GET-green)
-[PUT_SHIELD]: ![<img src="https://img.shields.io/badge/-GET-green">](https://img.shields.io/badge/-GET-green)
-[PATCH_SHIELD]: ![<img src="https://img.shields.io/badge/-GET-green">](https://img.shields.io/badge/-GET-green)
-[DELETE_SHIELD]: ![<img src="https://img.shields.io/badge/-GET-green">](https://img.shields.io/badge/-GET-green)
+<!-- shield per metodi HTTP -->
+[HEAD]: https://img.shields.io/badge/-HEAD-brightgreen
+[GET]: https://img.shields.io/badge/-GET-green
+[POST]: https://img.shields.io/badge/-POST-red
+[PUT]: https://img.shields.io/badge/-PUT-purple
+[PATCH]: https://img.shields.io/badge/-PATCH-blue
+[DELETE]: https://img.shields.io/badge/-DELETE-pink
 
-#### [GET_SHIELD] /api/account
+#### ![][GET] /api/account
 
 `curl localhost:8080/api/account`
 
@@ -108,7 +98,7 @@ example response
 }
 ```
 
-#### [POST_SHIELD] /api/account
+#### ![][POST] /api/account
 
 inserisci un nuovo account secondo i campi name e surname dentro il body in format JSON.
 
@@ -121,7 +111,7 @@ example response
 }
 ```
 
-#### [DELETE_SHIELD] /api/account?id={accountId}
+#### ![][DELETE] /api/account?id={accountId}
 
 l'accountId viene cancellato dalla tabella degli account. 
 Visto che è importante mantenere lo storico delle transazioni, la relativa tabella rimarrà intonsa
@@ -135,7 +125,7 @@ Date: Fri, 17 Jun 2022 11:09:35 GMT
 Content-Length: 0
 ```
 
-#### [HEAD_SHIELD] /api/account/{accountId}
+#### ![][HEAD] /api/account/{accountId}
 
 `curl localhost:8080/api/account/d91627ab5e086f3b4b0c``
 
@@ -147,7 +137,7 @@ X-Sistema-Bancario: Francesco;Refolli
 Content-Length: 0
 ```
 
-#### [GET_SHIELD] /api/account/{accountId}
+#### ![][GET] /api/account/{accountId}
 
 come HEAD, ma ritorna in formato JSON i dati dell'account.
 
@@ -163,7 +153,7 @@ example response
 }
 ```
 
-#### [PUT_SHIELD] /api/account/{accountId}
+#### ![][PUT] /api/account/{accountId}
 
 cambia io nome E il cognome (entrambi) di un Account specificando il nuovo nome e il nuovo cognome nel body.
 
@@ -176,7 +166,7 @@ Date: Fri, 17 Jun 2022 11:09:35 GMT
 Content-Length: 0
 ```
 
-#### [PATCH_SHIELD] /api/account/{accountId}
+#### ![][PATCH] /api/account/{accountId}
 
 cambia io nome O il cognome (non entrambi) di un Account specificando il nuovo nome/cognome nel body.
 
@@ -189,7 +179,7 @@ Date: Fri, 17 Jun 2022 11:09:35 GMT
 Content-Length: 0
 ```
 
-#### [POST_SHIELD] /api/account/{accountId}
+#### ![][POST] /api/account/{accountId}
 
 inserisce un prelievo o un deposito, a seconda che amount sia < o >= 0.
 
@@ -205,7 +195,7 @@ example response
 }
 ```
 
-#### [POST_SHIELD] /api/transfer
+#### ![][POST] /api/transfer
 
 inserisce una transazione con amount >= 0.
 
@@ -222,7 +212,7 @@ example response
 }
 ```
 
-#### [POST_SHIELD] /api/divert
+#### ![][POST] /api/divert
 
 inserisce una transazione che inverte una transazione tra due account, il cui id è passato tramite il body, ma solo se il beneficiario originale ha abbastanza soldi per eseguire la nuova transazione.
 
@@ -242,7 +232,7 @@ example response
 
 ### Enpoint estensione
 
-#### [GET_SHIELD] /api/transaction/{transactionId}
+#### ![][GET] /api/transaction/{transactionId}
 
 restituisce i dettagli di una transazione passata come parametro nel path.
 
@@ -274,5 +264,10 @@ example error response
     "error": "transactionId not in database"
 }
 ```
+
+### Avvertenze
+
+Mandare richieste ![][GET] con Body non vuoto o ![][POST] con parametri url non provoca il crash del server, nè viene restituito un errore solo perchè sono presenti informazioni in luoghi poco consoni. 
+Una ![][POST] con parametri url invece ma senza body restituirà un errore perchè è assente il body, il resto viene ignorato.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
