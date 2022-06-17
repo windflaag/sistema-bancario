@@ -1,5 +1,6 @@
 :root {
-    --color-dark-blue: #1234ff;
+    --color-blue: #1234ff;
+    --color-dark-blue: #0000ff;
     --color-white: #ffffff;
     --color-dark-white: #eeeeee;
     --color-light-green: #009578;
@@ -15,6 +16,8 @@
     --super-color: var(--color-black);
     --even-color: var(--color-yellow);
     --odd-color: var(--color-dark-yellow);
+    --button-color: var(--color-blue);
+    --button-hover-color: var(--color-dark-blue);
 }
 
 body {
@@ -66,7 +69,7 @@ table.transactionTable {
     font-weight: normal;
     width: 99%;
     max-width: 99%;
-    /*white-space: nowrap;*/
+    white-space: nowrap;
     /*background-color: white;*/
     border-radius: 5px;
     border: none;
@@ -116,34 +119,39 @@ table.transactionTable td.deposit {
 
 /* forms */
 
-div.inputForm {
-    margin-right: 25%;
-    margin-left: 25%;
-    display: grid;
-    text-align: center;
-    background: lightblue;
-}
-
-div.inputForm label {
-    width: 96%;
-    margin: 3%;
-    font-size: 17;
-}
-
-div.inputForm input {
-    margin: 3%;
-    font-size: 12;
-    border-collapse: collapse;
-    border: none;
-    border-radius: 5px;
-    width: 96%;
+div.inputForm input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
 div.inputForm button {
-    margin: 3%;
-    border-collapse: collapse;
+    width: 100%;
+    background-color: var(--button-color);
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
     border: none;
-    border-radius: 3.2px;
-    width: 96%;
-    background: darkgreen;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+div.inputForm button:hover {
+    background-color: var(--button-hover-color);
+}
+
+div.inputForm {
+    margin: 0.5%;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    text-align: center;
+}
+
+div.inputForm label {
+    font-size: 25px;
 }

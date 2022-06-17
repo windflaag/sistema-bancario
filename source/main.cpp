@@ -8,17 +8,7 @@ void init_folly (int argc, char **argv) {
     folly::init(&argc, &argv, true);
 }
 
-void testCodec(std::string body) {
-  //
-}
-
-void test() {
-  //
-}
-
 int main(int argc, char **argv) {
-    test();
-
     init_folly(argc, argv);
 
     // read configuration file

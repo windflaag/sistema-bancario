@@ -6,6 +6,9 @@ NAME_ALPHABET = string.ascii_lowercase + string.ascii_uppercase
 def random_name(LENGTH = 20):
     return "".join([ random.choice(NAME_ALPHABET) for _ in range(LENGTH) ])
 
+def random_amount():
+    return random.randint(0, 100)
+
 class API:
     def __init__(self, endpoint):
         self.endpoint = endpoint
@@ -83,17 +86,11 @@ class Tanzomat:
  
     def payment(self, amount_, to_):
         response = self.post(URL = self.api.at(f"/api/account/{to_}"), payload = { "amount":amount_ })
-        if response.status_code == 201:
-            return response.text
-        else:
-            raise ValueError(f"payment({amount_}, {to_}) request returned {response.status_code}")
+        return response.text
  
     def withdraw(self, amount_, from_):
         response = self.post(URL = self.api.at(f"/api/account/{from_}"), payload = { "amount": -amount_ })
-        if response.status_code == 201:
-            return response.text
-        else:
-            raise ValueError(f"withdraw({amount_}, {to_}) request returned {response.status_code}")
+        return response.text
 
     def reName(self, accountId, name):
         response = self.patch(URL = self.api.at(f"/api/account/{accountId}"), payload = { "name": name })
@@ -166,5 +163,21 @@ def testApi(SIZE = 7):
     accounts = tanzomat.getAccountList();
     print(f"accounts: {accounts}")
 
+def testSucc(LENGTH = 17):
+    tanzomat = Tanzomat(api = API("http://localhost:8080"))
+    id = tanzomat.addAccount("Francesco", "Refolli")
+    id2 = tanzomat.addAccount("Lara", "Refolli")
+    print(id)
+    for _ in range(LENGTH):
+        amount = random_amount()
+        print(f"#{_} of {amount} ==> {tanzomat.payment(amount, id)}")
+    print()
+    for _ in range(LENGTH):
+        amount = random_amount()
+        print(f"#{_} of {amount} ==> {tanzomat.withdraw(amount, id)}")
+
+    tanzomat.transfer(id, 1, id2)
+
 if __name__=="__main__":
     testApi(17)
+    testSucc(17)

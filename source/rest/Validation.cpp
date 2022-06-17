@@ -36,7 +36,7 @@ bool rest::Validation::validateName(std::string name) {
 }
 
 bool rest::Validation::validateAmount(int amount) {
-    return amount > 0;
+    return amount >= 0;
 }
 
 bool charIsValidForUUID(char c) {

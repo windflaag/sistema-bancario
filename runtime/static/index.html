@@ -2,61 +2,21 @@
   <head>
     <link rel="stylesheet" href="css/index.css"/>
     <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" href="css/banner.css"/>
     <title>Sistema Bancario</title>
-    <link rel="icon" href="img/favicon.png">
   </head>
   <script src="js/index.js"></script>
-  <body onload="initPage()">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <body>
     <div id="screen">
-      <div class="inputForm">
+      <div class="inputForm" id="theInputForm">
 	<label for="inputAccountId">insert account ID</label>
 	<input type="text" name="inputAccountId" id="inputAccountId" placeholder="" value=""></input>
-	<button>SEND</button>
+	<button onclick="loadPage()">SEND</button>
       </div>
-      <div class="infoBoard">
-	<div class="infoCard">
-	  <p>identity</p>
-	  <p>Francesco Refolli</p>
-	</div>
-	<div class="infoCard">
-	  <p>AccountID</p>
-	  <p>0</p>
-	</div>
-	<div class="infoCard">
-	  <p>Credit</p>
-	  <p>42</p>
-	</div>
-      </div>
-      <table class="transactionTable">
-	<thead>
-	  <tr>
-	    <th>transactionID</th>
-	    <th>timestamp</th>
-	    <th>amount</th>
-	    <th>to</th>
-	  </tr>
-	</thead>
-	<tbody>
-	  <tr>
-	    <td>2</td>
-	    <td>2</td>
-	    <td class="preliev">-21</td>
-	    <td>0</td>
-	  </tr>
-	  <tr>
-	    <td>1</td>
-	    <td>1</td>
-	    <td class="preliev">-21</td>
-	    <td></td>
-	  </tr>
-	  <tr>
-	    <td>0</td>
-	    <td>0</td>
-	    <td class="deposit">+42</td>
-	    <td></td>
-	  </tr>
-	</tbody>
-      </table>
+      <div id="theInfoBoard"></div>
+      <table id="theTransactionTable"></table>
+      <div id="banner"></div>
     </div>
   </body>
 </html>

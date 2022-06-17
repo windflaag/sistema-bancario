@@ -13,7 +13,7 @@ namespace static_engine {
     if (headers->getMethod() != proxygen::HTTPMethod::GET) {
       proxygen::ResponseBuilder(downstream_)
 	.status(400, "Bad method")
-	.body("Only GET is supported")
+	// .body("Only GET is supported")
 	.sendWithEOM();
       return;
     }

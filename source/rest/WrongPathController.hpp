@@ -11,8 +11,7 @@ namespace rest {
      public:
       WrongPathController();
 
-      void onRequest(
-          std::unique_ptr<proxygen::HTTPMessage> headers) noexcept override;
+      void onEOM() noexcept override;      
     };
 
 }

@@ -9,7 +9,8 @@ namespace politik {
   namespace detection {
     bool detectBrowserInUserAgent(std::string userAgent);
     bool detectAccountId(std::string path);  
-    bool detectStatic(std::string path);  
+    bool detectStatic(std::string path);
+    bool detectTransactionId(std::string path);
   }
 }
 

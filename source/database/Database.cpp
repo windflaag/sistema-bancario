@@ -26,7 +26,10 @@ int database::processResponse(void *result, int length, char **values, char **co
 
   Json::Value object = Json::objectValue;
   for(int i = 0; i < length; i++) {
-    object[std::string(columns[i])] = std::string(values[i]);
+    if (values[i])
+      object[std::string(columns[i])] = std::string(values[i]);
+    else
+      object[std::string(columns[i])] = Json::nullValue;
   }
 
   arrayOfResults->operator[](arrayOfResults->size()) = object;
@@ -129,16 +132,12 @@ void database::insertTransaction(
 					   std::string toId,
 					   std::string timestamp) {
   database::issueQuery(
-				 "begin transaction; update Accounts set credit = credit - " +
-				 std::to_string(amount) + " where accountId = \"" + fromId +
-				 "\"; update Accounts set credit = credit + " + std::to_string(amount) +
-				 " where accountId = \"" + toId +
-				 "\"; insert into Transactions values (\"" + transactionId +
-				 "\", \"" + fromId +
-				 "\", \"" + std::to_string(amount) +
-				 "\", \"" + toId +
-				 "\", \"" + timestamp +
-				 "\"); commit;");
+    "begin transaction;"
+    "insert or rollback into Transactions values (\"" + transactionId + "\", \"" + fromId + "\", \"" + std::to_string(amount) + "\", \"" + toId + "\", \"" + timestamp + "\");"
+    "update or rollback Accounts set credit = credit + " + std::to_string(amount) + " where accountId = \"" + toId + "\";"
+    "update or rollback Accounts set credit = credit - " + std::to_string(amount) + " where accountId = \"" + fromId + "\";"
+    "commit;"
+  );
 }
 
 Json::Value* database::getTransactions(std::string accountId) {
@@ -176,7 +175,10 @@ Json::Value* database::getAccountMetadata(std::string accountId) {
 }
 
 Json::Value* database::getTransactionMetadata(std::string transactionId) {
-  Json::Value* data = database::launchQuery("select TAT.fromId as fromId, TAT.amount as amount, TAT.toId as toId, FR.credit as fromCredit, TAT.credit as toCredit from Accounts as FR join (Transactions as T join Accounts as AT on AT.accountId = T.toId) as TAT on FR.accountId = TAT.fromId where TAT.transactionId = \"" + transactionId + "\";");
+  Json::Value* data = database::launchQuery(
+      "select TAT.fromId as fromId, TAT.amount as amount, TAT.toId as toId, FR.credit as fromCredit, TAT.credit as toCredit, TAT.timestamp as timestamp "
+      "from Accounts as FR join (Transactions as T join Accounts as AT on AT.accountId = T.toId) as TAT on FR.accountId = TAT.fromId "
+      "where TAT.transactionId = \"" + transactionId + "\";");
 
   if (data->size() == 0) {
     delete data;
@@ -190,10 +192,32 @@ Json::Value* database::getTransactionMetadata(std::string transactionId) {
   metadata->operator[]("toId") = data->operator[](0)["toId"];
   metadata->operator[]("toCredit") = std::stoi(data->operator[](0)["toCredit"].asString());
   metadata->operator[]("amount") = std::stoi(data->operator[](0)["amount"].asString());
+  metadata->operator[]("timestamp") = data->operator[](0)["timestamp"].asString();
   delete data;
 
   return metadata;
 }
+
+Json::Value* database::getTransactionData(std::string transactionId) {
+  Json::Value* data = database::launchQuery(
+      "select * from Transactions where transactionId = \"" + transactionId + "\";");
+
+  if (data->size() == 0) {
+    delete data;
+    throw std::runtime_error("");
+  }
+  
+  Json::Value* metadata = new Json::Value(Json::objectValue);
+  
+  metadata->operator[]("transactionId") = transactionId;
+  metadata->operator[]("recipient") = data->operator[](0)["toId"].asString();
+  metadata->operator[]("amount") = std::stoi(data->operator[](0)["amount"].asString());
+  metadata->operator[]("timestamp") = data->operator[](0)["timestamp"].asString();
+  delete data;
+
+  return metadata;
+}
+
 
 void database::insertPayment(
 					   std::string transactionId,
@@ -201,13 +225,11 @@ void database::insertPayment(
 					   int amount,
 					   std::string timestamp) { 
   database::issueQuery(
-				 "begin transaction; update Accounts set credit = credit + " + std::to_string(amount) +
-				 " where accountId = \"" + accountId +
-				 "\"; insert into Transactions values (\"" + transactionId +
-				 "\", NULL, \"" + std::to_string(amount) +
-				 "\", \"" + accountId +
-				 "\", \"" + timestamp +
-				 "\"); commit;");
+    "begin transaction;"
+    "insert or rollback into Transactions values (\"" + transactionId + "\", NULL, \"" + std::to_string(amount) + "\", \"" + accountId + "\", \"" + timestamp + "\");"
+    "update or rollback Accounts set credit = credit + " + std::to_string(amount) + " where accountId = \"" + accountId + "\";"
+    "commit;"
+          );
 }
 
 void database::insertWithdraw(
@@ -216,27 +238,25 @@ void database::insertWithdraw(
 					   int amount,
 					   std::string timestamp) {
   database::issueQuery(
-				 "begin transaction; update Accounts set credit = credit - " +
-				 std::to_string(amount) + " where accountId = \"" + accountId +
-				 "\"; insert into Transactions values (\"" + transactionId +
-				 "\", \"" + accountId +
-				 "\", \"" + std::to_string(amount) +
-				 "\", NULL, \"" + timestamp +
-				 "\"); commit;");
+    "begin transaction;"
+    "insert or rollback into Transactions values (\"" + transactionId + "\", \"" + accountId + "\", \"" + std::to_string(amount) + "\", NULL, \"" + timestamp + "\");"
+    "update or rollback Accounts set credit = credit - " + std::to_string(amount) + " where accountId = \"" + accountId + "\";"
+    "commit;"
+          );
 }
 
 void database::updateName(std::string accountId, std::string name) {
   database::issueQuery(
-				 "update Accounts set name = \"" + name +
-				 "\" where accountId = \"" + accountId + "\";"
-				 );
+     "update Accounts set name = \"" + name +
+     "\" where accountId = \"" + accountId + "\";"
+  );
 }
 
 void database::updateSurname(std::string accountId, std::string surname) {
   database::issueQuery(
-				 "update Accounts set surname = \"" + surname +
-				 "\" where accountId = \"" + accountId + "\";"
-				 );
+     "update Accounts set surname = \"" + surname +
+     "\" where accountId = \"" + accountId + "\";"
+  );
 }
 
 void database::updateNameAndSurname(std::string accountId, std::string name, std::string surname) {

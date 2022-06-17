@@ -9,8 +9,7 @@ rest::WrongPathController::WrongPathController() {
     //
 }
 
-void rest::WrongPathController::onRequest(std::unique_ptr<proxygen::HTTPMessage> /*req*/) noexcept {
+void rest::WrongPathController::onEOM() noexcept {
     proxygen::ResponseBuilder builder(downstream_);
     rest::sendError(builder, 404, "Not Found", "unable to find requested data");
 }
-

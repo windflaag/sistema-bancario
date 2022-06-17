@@ -24,5 +24,9 @@ bool politik::detection::detectAccountId(std::string path) {
 }
 
 bool politik::detection::detectStatic(std::string path) {
-  return detectByBase("/api/static", path);
+  return detectByBase("/static", path);
+}
+
+bool politik::detection::detectTransactionId(std::string path) {
+  return detectByBase("/api/transaction", path);
 }

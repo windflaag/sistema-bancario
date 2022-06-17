@@ -127,7 +127,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
         std::string timestamp = utility::getCurrentTimeStampString();
 
         std::string transactionId = codec::computeUUID();
-        if (amount > 0)
+        if (amount >= 0)
             database::insertPayment(transactionId, this->accountId, amount, timestamp);
         else {
             Json::Value* currentCredit = database::getCredit(this->accountId);
@@ -156,8 +156,8 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
           .body(result)
           .sendWithEOM();
         return;
-      } catch(...) {
-	rest::sendError(builder, 409, "Conflict", "conflict with existing data");
+      } catch(std::exception &err) {
+	rest::sendError(builder, 400, "Bad Request", "not enouth money on account");
         return;
       }
   } else if (this->invokedMethod == proxygen::HTTPMethod::PUT) {

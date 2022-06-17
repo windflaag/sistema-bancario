@@ -24,6 +24,9 @@ inline char nibble_to_hex(short c) {
   case 14 : return 'e';
   case 15 : return 'f';
   }
+  
+  // = error
+  return ' ';
 }
 
 inline std::string byte_to_hex(unsigned char s) {
@@ -84,10 +87,10 @@ std::string codec::computeUUID() {
   return arrangeUUID(output);
 }
 
-Json::Value codec::parseUrlEncoded(std::string* urlencoded) {
-    Json::Value parameters;
-    // TODO:
-    return parameters;
+Json::Value codec::parseUrlEncoded(std::string* /*urlencoded*/) {
+  Json::Value parameters;
+  // TODO:
+  return parameters;
 }
 
 Json::Value codec::parseJSON(std::string* json) {
@@ -105,14 +108,14 @@ Json::Value codec::parseJSON(std::string* json) {
 Json::Value codec::parseBody(std::string* body) {
   return codec::parseJSON(body);
   /* was JSON and UrlEncoded, but now is JSON
-  try {
-    return codec::parseJSON(body);
-  } catch(...) {
-    try {
-      return codec::parseUrlEncoded(body);
-    } catch(...) {
-      throw std::runtime_error("");
-    }
-  }
+     try {
+     return codec::parseJSON(body);
+     } catch(...) {
+     try {
+     return codec::parseUrlEncoded(body);
+     } catch(...) {
+     throw std::runtime_error("");
+     }
+     }
   */
 }
