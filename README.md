@@ -1,14 +1,19 @@
 # Sistema Bancario
 
-## Realizzato da
+## Authors
 
 - Refolli Francesco 865955
 
-## Descrizione
+## Summary
 
 Progetto di Sistemi Distribuiti, costruito seguendo la traccia proposta #2 (REST).
 
 La soluzione implementata integra un web server scritto in C++ con Proxygen, un database locale con SQLite3 e un front-end realizzato in Javascript con JQuery.
+
+Gli endpoint che accettano informazioni nel body usano strettamente il formato JSON.
+Tutti gli endpoint che ritornano informazioni nel body usano il formato JSON.
+
+Per ottenere maggiori informazioni sul comportamento degli endpoint: <a href="#acknowledgments">link</a>.
 
 <div id="top"></div>
 <!--
@@ -80,8 +85,6 @@ Distributed under the BEERWARE License. See `LICENSE` for more information.
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-### Endpoint standard (dalla Traccia 2)
-
 <!-- shield per metodi HTTP -->
 [HEAD]: https://img.shields.io/badge/-HEAD-brightgreen
 [GET]: https://img.shields.io/badge/-GET-green
@@ -89,6 +92,8 @@ Distributed under the BEERWARE License. See `LICENSE` for more information.
 [PUT]: https://img.shields.io/badge/-PUT-purple
 [PATCH]: https://img.shields.io/badge/-PATCH-blue
 [DELETE]: https://img.shields.io/badge/-DELETE-pink
+
+### Endpoint standard (dalla Traccia 2)
 
 #### ![][GET] /api/account
 
@@ -225,7 +230,7 @@ ritorna l'id della transazione e il nuovo credito degli account coinvolti.
 }
 ```
 
-### Enpoint estensione
+### Endpoint della mia estensione
 
 #### ![][GET] /api/transaction/{transactionId}
 
