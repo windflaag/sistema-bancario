@@ -16,7 +16,7 @@
 	<input type="text" name="inputRecipientAccountId" id="inputRecipientAccountId" placeholder="" value=""></input>
 	<label for="inputAmount">insert amount</label>
 	<input type="text" name="inputAmount" id="inputAmount" placeholder="" value=""></input>
-	<button onclick="transfer()">SEND</button>
+	<button onclick="transfer()">TRANSFER</button>
       </div>
       <div id="theTransferBoard" class="transferBoard"></div>
       <div id="banner"></div>

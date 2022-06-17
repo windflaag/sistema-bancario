@@ -6,11 +6,11 @@
 #include "../database/Database.hpp"
 #include "../utility/Utility.hpp"
 #include "../codec/Codec.hpp"
-#include "Validation.hpp"
-#include "FastResponse.hpp"
+#include "../common/Validation.hpp"
+#include "../common/FastResponse.hpp"
 
 rest::ApiAccountDetailsController::ApiAccountDetailsController(std::string accountId) {
-  if (rest::Validation::validateId(accountId)) {
+  if (common::validateId(accountId)) {
     this->accountId = accountId;
   }
 }
@@ -21,7 +21,7 @@ void rest::ApiAccountDetailsController::onRequest
   
   if (this->accountId == "") {
     this->alreadySent = true;
-    rest::sendError(builder, 400, "Bad Request", "invalid accountId supplied");
+    common::sendError(builder, 400, "Bad Request", "invalid accountId supplied");
     return;
   } else if (req->getMethod() == proxygen::HTTPMethod::GET) {
     Json::Value* metadata = NULL;
@@ -29,7 +29,7 @@ void rest::ApiAccountDetailsController::onRequest
       metadata = database::getAccountMetadata(this->accountId);
     } catch(...) {
       this->alreadySent = true;
-      rest::sendError(builder, 404, "Not Found", "accountId not in database");
+      common::sendError(builder, 404, "Not Found", "accountId not in database");
       return;
     }
 
@@ -38,7 +38,7 @@ void rest::ApiAccountDetailsController::onRequest
       transactions = database::getTransactions(this->accountId);
     } catch(...) {
       this->alreadySent = true;
-      rest::sendError(builder, 500, "Internal Server Error", "unable to fetch data");
+      common::sendError(builder, 500, "Internal Server Error", "unable to fetch data");
       return;
     }
 
@@ -64,7 +64,7 @@ void rest::ApiAccountDetailsController::onRequest
       metadata = database::getAccountMetadata(this->accountId);
     } catch(...) {
       this->alreadySent = true;
-      rest::sendError(builder, 404, "Not Found", "accountId not in database");
+      common::sendError(builder, 404, "Not Found", "accountId not in database");
       return;
     }
 
@@ -88,7 +88,7 @@ void rest::ApiAccountDetailsController::onRequest
     this->invokedMethod = proxygen::HTTPMethod::POST;
   } else {
     this->alreadySent = true;
-    rest::sendError(builder, 501, "Not Implemented", "method not implemented");
+    common::sendError(builder, 501, "Not Implemented", "method not implemented");
     return;
   }
 }
@@ -102,7 +102,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
 
   // body doesn't exists or is empty
   if (!(this->body_) || (this->body_->size() == 0)) {
-    rest::sendError(builder, 400, "Bad Request", "body is empty");
+    common::sendError(builder, 400, "Bad Request", "body is empty");
     return;
   }
 
@@ -110,7 +110,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
   try {
     parameters = codec::parseBody(this->body_.get());
   } catch(...) {
-    rest::sendError(builder, 400, "Bad Request", "cannot parse body");
+    common::sendError(builder, 400, "Bad Request", "cannot parse body");
     return;
   }
 
@@ -121,7 +121,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
 	(! parameters.isMember("amount")) ||
 	(! parameters["amount"].isInt())
 	) {
-      rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
+      common::sendError(builder, 400, "Bad Request", "arguments are invalid");
       return;
     }
 
@@ -136,7 +136,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
 	Json::Value* currentCredit = database::getCredit(this->accountId);
 	if (currentCredit->asInt() < amount) {
 	  delete currentCredit;
-	  rest::sendError(builder, 400, "Bad Request", "not enouth money for withdraw");
+	  common::sendError(builder, 400, "Bad Request", "not enouth money for withdraw");
 	  return;
 	} else {
 	  delete currentCredit;
@@ -160,7 +160,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
 	.sendWithEOM();
       return;
     } catch(std::exception &err) {
-      rest::sendError(builder, 400, "Bad Request", "not enouth money on account");
+      common::sendError(builder, 400, "Bad Request", "not enouth money on account");
       return;
     }
   } else if (this->invokedMethod == proxygen::HTTPMethod::PUT) {
@@ -170,10 +170,10 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
 	(! parameters.isMember("surname")) ||
 	(! parameters["surname"].isString()) ||
 	(! parameters["name"].isString()) ||
-	(! Validation::validateName(parameters["name"].asString())) ||
-	(! Validation::validateName(parameters["surname"].asString()))
+	(! common::validateName(parameters["name"].asString())) ||
+	(! common::validateName(parameters["surname"].asString()))
 	) {
-      rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
+      common::sendError(builder, 400, "Bad Request", "arguments are invalid");
       return;
     }
     
@@ -188,7 +188,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
 	.sendWithEOM();
       return;
     } catch(...) {
-      rest::sendError(builder, 409, "Conflict", "conflict with existing data");
+      common::sendError(builder, 409, "Conflict", "conflict with existing data");
       return;
     }
 
@@ -202,16 +202,16 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
 	 (parameters.isMember("name")) &&
 	 (parameters.isMember("surname")))
 	) {
-      rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
+      common::sendError(builder, 400, "Bad Request", "arguments are invalid");
       return;
     }
    
     if (parameters.isMember("name")) {
       if (
 	  (! parameters["name"].isString()) ||
-	  (! Validation::validateName(parameters["name"].asString()))
+	  (! common::validateName(parameters["name"].asString()))
 	  ) {
-	rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
+	common::sendError(builder, 400, "Bad Request", "arguments are invalid");
         return;
       }
 
@@ -225,15 +225,15 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
           .sendWithEOM();
         return;
       } catch(...) {
-	rest::sendError(builder, 409, "Conflict", "conflict with existing data");
+	common::sendError(builder, 409, "Conflict", "conflict with existing data");
         return;
       }
     } else {
       if (
 	  (! parameters["surname"].isString()) ||
-	  (! Validation::validateName(parameters["surname"].asString()))
+	  (! common::validateName(parameters["surname"].asString()))
 	  ) {
-	rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
+	common::sendError(builder, 400, "Bad Request", "arguments are invalid");
         return;
       }
 
@@ -247,7 +247,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
           .sendWithEOM();
         return;
       } catch(...) {
-	rest::sendError(builder, 409, "Conflict", "conflict with existing data");
+	common::sendError(builder, 409, "Conflict", "conflict with existing data");
         return;
       } 
     }

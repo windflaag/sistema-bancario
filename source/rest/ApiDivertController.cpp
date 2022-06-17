@@ -6,8 +6,8 @@
 #include "../database/Database.hpp"
 #include "../utility/Utility.hpp"
 #include "../codec/Codec.hpp"
-#include "Validation.hpp"
-#include "FastResponse.hpp"
+#include "../common/Validation.hpp"
+#include "../common/FastResponse.hpp"
 
 rest::ApiDivertController::ApiDivertController() {
   //
@@ -20,7 +20,7 @@ void rest::ApiDivertController::onRequest
     // placeholder
   } else {
     this->alreadySent = true;
-    rest::sendError(builder, 501, "Not Implemented", "on this endpoint this method isn't be implemented");
+    common::sendError(builder, 501, "Not Implemented", "on this endpoint this method isn't be implemented");
     return;
   }
 }
@@ -34,7 +34,7 @@ void rest::ApiDivertController::onEOM() noexcept {
 
   // body doesn't exists or is empty
   if (!(this->body_) || (this->body_->size() == 0)) {
-    rest::sendError(builder, 400, "Bad Request", "body is empty");
+    common::sendError(builder, 400, "Bad Request", "body is empty");
     return;
   }
   
@@ -42,7 +42,7 @@ void rest::ApiDivertController::onEOM() noexcept {
   try {
     parameters = codec::parseBody(this->body_.get());
   } catch(...) {
-    rest::sendError(builder, 400, "Bad Request", "cannot parse body");
+    common::sendError(builder, 400, "Bad Request", "cannot parse body");
     return;
   }
   
@@ -50,9 +50,9 @@ void rest::ApiDivertController::onEOM() noexcept {
       (!(parameters.isObject())) ||
       (! parameters.isMember("id")) ||
       (! parameters["id"].isString()) ||
-      (! Validation::validateUUID(parameters["id"].asString()))
+      (! common::validateUUID(parameters["id"].asString()))
       ) {
-    rest::sendError(builder, 400, "Bad Request", "wrong arguments supplied");
+    common::sendError(builder, 400, "Bad Request", "wrong arguments supplied");
     return;
   }
 
@@ -65,7 +65,7 @@ void rest::ApiDivertController::onEOM() noexcept {
     int amount = metadata->operator[]("amount").asInt();
 
     if (fromCredit < amount) {
-      rest::sendError(builder, 400, "Bad Request", "no enouth money on transaction#from account");
+      common::sendError(builder, 400, "Bad Request", "no enouth money on transaction#from account");
       return;
     }
 
@@ -91,7 +91,7 @@ void rest::ApiDivertController::onEOM() noexcept {
       .sendWithEOM();
     return;
   } catch(std::exception &err) {
-    rest::sendError(builder, 500, "Internal Server Error", std::string("something went wrong with execution of correct request: ") + err.what());
+    common::sendError(builder, 500, "Internal Server Error", std::string("something went wrong with execution of correct request: ") + err.what());
     return;
   }
 }

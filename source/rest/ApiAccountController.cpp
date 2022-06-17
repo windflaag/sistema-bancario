@@ -6,8 +6,8 @@
 #include "../database/Database.hpp"
 #include "../utility/Utility.hpp"
 #include "../codec/Codec.hpp"
-#include "Validation.hpp"
-#include "FastResponse.hpp"
+#include "../common/Validation.hpp"
+#include "../common/FastResponse.hpp"
 
 rest::ApiAccountController::ApiAccountController() {
   //
@@ -34,7 +34,7 @@ void rest::ApiAccountController::onRequest
 	.sendWithEOM();
       return;
     } catch(...) {
-      rest::sendError(builder, 500, "Internal Server Error", "unable to fetch data");
+      common::sendError(builder, 500, "Internal Server Error", "unable to fetch data");
       return;
     }
   } else if (req->getMethod() == proxygen::HTTPMethod::POST) {
@@ -43,9 +43,9 @@ void rest::ApiAccountController::onRequest
     this->alreadySent = true;
     if (
 	(! req->hasQueryParam("id")) ||
-	(! Validation::validateId(req->getQueryParam("id")))
+	(! common::validateId(req->getQueryParam("id")))
         ) {
-      rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
+      common::sendError(builder, 400, "Bad Request", "arguments are invalid");
       return;
     }
 
@@ -58,12 +58,12 @@ void rest::ApiAccountController::onRequest
 	.status(200, "OK")
 	.sendWithEOM();
     } catch(...) {
-      rest::sendError(builder, 500, "Internal Server Error", "unable to delete data");
+      common::sendError(builder, 500, "Internal Server Error", "unable to delete data");
       return;
     }
   } else {
     this->alreadySent = true;
-    rest::sendError(builder, 501, "Not Implemented", "method not implemented");
+    common::sendError(builder, 501, "Not Implemented", "method not implemented");
     return;
   }
 }
@@ -77,7 +77,7 @@ void rest::ApiAccountController::onEOM() noexcept {
 
   // body doesn't exists or is empty
   if (!(this->body_) || (this->body_->size() == 0)) {
-    rest::sendError(builder, 400, "Bad Request", "body is empty");
+    common::sendError(builder, 400, "Bad Request", "body is empty");
     return;
   }
 
@@ -85,7 +85,7 @@ void rest::ApiAccountController::onEOM() noexcept {
   try {
     parameters = codec::parseBody(this->body_.get());
   } catch(...) {
-    rest::sendError(builder, 400, "Bad Request", "cannot parse body");
+    common::sendError(builder, 400, "Bad Request", "cannot parse body");
     return;
   }
 
@@ -95,10 +95,10 @@ void rest::ApiAccountController::onEOM() noexcept {
       (! parameters.isMember("surname")) ||
       (! parameters["name"].isString()) ||
       (! parameters["surname"].isString()) ||
-      (! Validation::validateName(parameters["name"].asString())) ||
-      (! Validation::validateName(parameters["surname"].asString()))
+      (! common::validateName(parameters["name"].asString())) ||
+      (! common::validateName(parameters["surname"].asString()))
       ) {
-    rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
+    common::sendError(builder, 400, "Bad Request", "arguments are invalid");
     return;
   }
 
@@ -119,7 +119,7 @@ void rest::ApiAccountController::onEOM() noexcept {
       .sendWithEOM();
     return;
   } catch(...) {
-    rest::sendError(builder, 409, "Conflict", "conflict with existing data");
+    common::sendError(builder, 409, "Conflict", "conflict with existing data");
     return;
   }
 }

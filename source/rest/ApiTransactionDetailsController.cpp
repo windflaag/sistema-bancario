@@ -6,11 +6,11 @@
 #include "../database/Database.hpp"
 #include "../utility/Utility.hpp"
 #include "../codec/Codec.hpp"
-#include "Validation.hpp"
-#include "FastResponse.hpp"
+#include "../common/Validation.hpp"
+#include "../common/FastResponse.hpp"
 
 rest::ApiTransactionDetailsController::ApiTransactionDetailsController(std::string transactionId) {
-  if (rest::Validation::validateUUID(transactionId)) {
+  if (common::validateUUID(transactionId)) {
     this->transactionId = transactionId;
   }
 }
@@ -21,7 +21,7 @@ void rest::ApiTransactionDetailsController::onRequest
   
   if (this->transactionId == "") {
     this->alreadySent = true;
-    rest::sendError(builder, 400, "Bad Request", "invalid transactionId supplied");
+    common::sendError(builder, 400, "Bad Request", "invalid transactionId supplied");
     return;
   } else if (req->getMethod() == proxygen::HTTPMethod::GET) {
     Json::Value* metadata = NULL;
@@ -30,7 +30,7 @@ void rest::ApiTransactionDetailsController::onRequest
       metadata = database::getTransactionData(this->transactionId);
     } catch(std::exception &err) {
       this->alreadySent = true;
-      rest::sendError(builder, 404, "Not Found", "transactionId not in database");
+      common::sendError(builder, 404, "Not Found", "transactionId not in database");
       return;
     }
 
@@ -50,7 +50,7 @@ void rest::ApiTransactionDetailsController::onRequest
       .sendWithEOM();
   } else {
     this->alreadySent = true;
-    rest::sendError(builder, 501, "Not Implemented", "method not implemented");
+    common::sendError(builder, 501, "Not Implemented", "method not implemented");
     return;
   }
 }

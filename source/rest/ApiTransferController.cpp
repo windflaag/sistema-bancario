@@ -6,8 +6,8 @@
 #include "../database/Database.hpp"
 #include "../utility/Utility.hpp"
 #include "../codec/Codec.hpp"
-#include "Validation.hpp"
-#include "FastResponse.hpp"
+#include "../common/Validation.hpp"
+#include "../common/FastResponse.hpp"
 
 rest::ApiTransferController::ApiTransferController() {
   //
@@ -20,7 +20,7 @@ void rest::ApiTransferController::onRequest
     // placeholder
   } else {
     this->alreadySent = true;
-    rest::sendError(builder, 501, "Not Implemented", "method not implemented");
+    common::sendError(builder, 501, "Not Implemented", "method not implemented");
     return;
   }
 }
@@ -34,7 +34,7 @@ void rest::ApiTransferController::onEOM() noexcept {
 
   // body doesn't exists or is empty
   if (!(this->body_) || (this->body_->size() == 0)) {
-    rest::sendError(builder, 400, "Bad Request", "body is empty");
+    common::sendError(builder, 400, "Bad Request", "body is empty");
     return;
   }
 
@@ -42,7 +42,7 @@ void rest::ApiTransferController::onEOM() noexcept {
   try {
     parameters = codec::parseBody(this->body_.get());
   } catch(...) {
-    rest::sendError(builder, 400, "Bad Request", "cannot parse body");
+    common::sendError(builder, 400, "Bad Request", "cannot parse body");
     return;
   }
 
@@ -54,11 +54,11 @@ void rest::ApiTransferController::onEOM() noexcept {
       (! parameters["from"].isString()) ||
       (! parameters["amount"].isInt()) ||
       (! parameters["to"].isString()) ||
-      (! Validation::validateId(parameters["from"].asString())) ||
-      (! Validation::validateAmount(parameters["amount"].asInt())) ||
-      (! Validation::validateId(parameters["to"].asString()))
+      (! common::validateId(parameters["from"].asString())) ||
+      (! common::validateAmount(parameters["amount"].asInt())) ||
+      (! common::validateId(parameters["to"].asString()))
       ) {
-    rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
+    common::sendError(builder, 400, "Bad Request", "arguments are invalid");
     return;
   }
 
@@ -71,7 +71,7 @@ void rest::ApiTransferController::onEOM() noexcept {
     Json::Value* fromCredit = database::getCredit(fromId);
     if (fromCredit->asInt() < amount) {
       delete fromCredit;
-      rest::sendError(builder, 400, "Bad Request", "not enouth money for transaction");
+      common::sendError(builder, 400, "Bad Request", "not enouth money for transaction");
       return;
     }
 
@@ -94,7 +94,7 @@ void rest::ApiTransferController::onEOM() noexcept {
       .sendWithEOM();
     return;
   } catch(...) {
-    rest::sendError(builder, 409, "Conflict", "conflict with existing data");
+    common::sendError(builder, 409, "Conflict", "conflict with existing data");
     return;
   }
 }

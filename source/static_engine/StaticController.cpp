@@ -1,6 +1,7 @@
 #include "StaticController.hpp"
-#include "Validation.hpp"
+#include "../common/Validation.hpp"
 #include "../singleton/Singleton.hpp"
+#include "../common/FastResponse.hpp"
 
 namespace static_engine {
 
@@ -9,22 +10,19 @@ namespace static_engine {
   }
 
   void StaticController::onRequest(std::unique_ptr<proxygen::HTTPMessage> headers) noexcept {
-    // accept only GET requests for now
+    proxygen::ResponseBuilder builder (downstream_);
+
+    // accept only GET requests
     if (headers->getMethod() != proxygen::HTTPMethod::GET) {
-      proxygen::ResponseBuilder(downstream_)
-	.status(400, "Bad method")
-	// .body("Only GET is supported")
-	.sendWithEOM();
+      common::sendError(builder, 400, "Bad Method", "Only GET is supported");
       return;
     }
     
     try {
       // validate the path
-      this->filepath = validation::validatePath(this->filepath);
+      this->filepath = common::validatePath(this->filepath);
     } catch (...) {
-      proxygen::ResponseBuilder(downstream_)
-	.status(403, "Forbidden")
-	.sendWithEOM();
+      common::sendError(builder, 403, "Forbidden", "Don't have permission to explore this path");
       return;
     }
     
@@ -32,16 +30,14 @@ namespace static_engine {
       // find file in filesystem
       file_ = std::make_unique<folly::File>(filepath);
     } catch (...) {
-      proxygen::ResponseBuilder(downstream_)
-	.status(404, "Not Found")
-	.sendWithEOM();
+      common::sendError(builder, 404, "Not Found", "Unable to find requested resource");
       return;
     }
 
     // init response
-    proxygen::ResponseBuilder(downstream_)
+    builder
       .status(200, "Ok")
-      .header("Content-Type", validation::getContentType(this->filepath))
+      .header("Content-Type", common::getContentType(this->filepath))
       .send();
 
     // start read iter
@@ -62,17 +58,14 @@ namespace static_engine {
 
       if (rc < 0) {
 	// error
-	VLOG(4) << "Read error=" << rc;
 	file_.reset();
 	evb->runInEventBaseThread([this] {
-	  LOG(ERROR) << "Error reading file";
 	  downstream_->sendAbort();
 	});
 	break;
       } else if (rc == 0) {
 	// done
 	file_.reset();
-	VLOG(4) << "Read EOF";
 	evb->runInEventBaseThread(
 				  [this] { proxygen::ResponseBuilder(downstream_).sendWithEOM(); });
 	break;
@@ -88,7 +81,6 @@ namespace static_engine {
     evb->runInEventBaseThread([this] {
       readFileScheduled_ = false;
       if (!checkForCompletion() && !paused_) {
-	VLOG(4) << "Resuming deferred readFile";
 	onEgressResumed();
       }
     });
@@ -96,12 +88,10 @@ namespace static_engine {
 
   void StaticController::onEgressPaused() noexcept {
     // This will terminate readFile soon
-    VLOG(4) << "StaticController paused";
     paused_ = true;
   }
 
   void StaticController::onEgressResumed() noexcept {
-    VLOG(4) << "StaticController resumed";
     paused_ = false;
     // If readFileScheduled_, it will reschedule itself
     if (!readFileScheduled_ && file_) {
@@ -110,8 +100,6 @@ namespace static_engine {
 						      std::bind(&StaticController::readFile,
 								this,
 								folly::EventBaseManager::get()->getEventBase()));
-    } else {
-      VLOG(4) << "Deferred scheduling readFile";
     }
   }
 
@@ -123,7 +111,7 @@ namespace static_engine {
   }
 
   void StaticController::onUpgrade(proxygen::UpgradeProtocol /*protocol*/) noexcept {
-    // handler doesn't support upgrades
+    // this handler doesn't support upgrades
   }
 
   void StaticController::requestComplete() noexcept {
@@ -140,7 +128,6 @@ namespace static_engine {
 
   bool StaticController::checkForCompletion() {
     if (finished_ && !readFileScheduled_) {
-      VLOG(4) << "deleting StaticController";
       delete this;
       return true;
     }

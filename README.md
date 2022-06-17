@@ -94,7 +94,6 @@ Distributed under the BEERWARE License. See `LICENSE` for more information.
 
 `curl localhost:8080/api/account`
 
-example response
 ```json
 {
     "accounts": [
@@ -110,7 +109,6 @@ inserisci un nuovo account secondo i campi name e surname dentro il body in form
 
 `curl -X POST -d "{\"name\": \"Francesco\", \"surname\": \"Refolli\"}" localhost:8080/api/account`
 
-example response
 ```json
 {
     "accountId": "d91627ab5e086f3b4b0c"
@@ -124,7 +122,6 @@ Visto che è importante mantenere lo storico delle transazioni, la relativa tabe
 
 `curl -v -X DELETE localhost:8080/api/account?id=d91627ab5e086f3b4b0c`
 
-example response
 ```http
 HTTP/1.1 200 OK
 Date: Fri, 17 Jun 2022 11:09:35 GMT
@@ -135,7 +132,6 @@ Content-Length: 0
 
 `curl localhost:8080/api/account/d91627ab5e086f3b4b0c``
 
-example response
 ```http
 HTTP/1.1 200 OK
 Date: Fri, 17 Jun 2022 11:09:35 GMT
@@ -149,7 +145,6 @@ come HEAD, ma ritorna in formato JSON i dati dell'account.
 
 `curl localhost:8080/api/account/d91627ab5e086f3b4b0c``
 
-example response
 ```json
 {
     "credit": "0",
@@ -165,7 +160,6 @@ cambia io nome E il cognome (entrambi) di un Account specificando il nuovo nome 
 
 `curl -v -X PUT -d "{\"name\": \"Tommaso\", \"surname\": \"Rossi\"}" localhost:8080/api/account/cb92b3e7a99e0d743a33`
 
-example response
 ```http
 HTTP/1.1 200 OK
 Date: Fri, 17 Jun 2022 11:11:35 GMT
@@ -178,7 +172,6 @@ cambia io nome O il cognome (non entrambi) di un Account specificando il nuovo n
 
 `curl -v -X PATCH -d "{\"name\": \"Andrea\"}" localhost:8080/api/account/cb92b3e7a99e0d743a33`
 
-example response
 ```http
 HTTP/1.1 200 OK
 Date: Fri, 17 Jun 2022 11:09:35 GMT
@@ -193,7 +186,6 @@ ritorna l'id della transazione e il nuovo credito dell'account.
 
 `curl -X POST -d "{\"amount\": 9}" localhost:8080/api/account`
 
-example response
 ```json
 {
     "credit": 9,
@@ -209,7 +201,6 @@ ritorna l'id della transazione e il nuovo credito degli account coinvolti.
 
 `curl -X POST -d "{\"from\": \"079770774a0285b6e104\", \"to\": \"cff5b87b40e5c2b0a947\", \"amount\": 9}" localhost:8080/api/account`
 
-example response
 ```json
 {
     "079770774a0285b6e104": 1,
@@ -223,8 +214,6 @@ example response
 inserisce una transazione che inverte una transazione tra due account, il cui id è passato tramite il body, ma solo se il beneficiario originale ha abbastanza soldi per eseguire la nuova transazione.
 
 ritorna l'id della transazione e il nuovo credito degli account coinvolti.
-
-example response
 
 `curl -X POST -d "{\"id\": \"f0783c9e-4f27-4389-aff7-7b3d1e8f47a3\"}" localhost:8080/api/divert`
 
@@ -244,7 +233,6 @@ restituisce i dettagli di una transazione passata come parametro nel path.
 
 `curl localhost:8080/api/transaction/b3d9ec76-3b1d-4e87-8b45-2291c8643219`
 
-example response
 ```json
 {
     "amount":44,
@@ -260,20 +248,23 @@ example response
 ### Gestione delle eccezioni
 
 un esempio di risposta ad una richiesta fallita.
-Il server imposta un codice di stato HTTP in base all'errore (400, 500, 501, 409 ...), e ritorna un JSON contenente la probabile ragione dell'errore.
+Il server imposta un codice di stato HTTP in base all'errore (400, 500, 501, 409 ...).
+Quindi ritorna un JSON contenente il codice di status precedentemente settato, la sua rappresentazione in forma testuale e un messaggio che descrive la natura dell'errore.
 
-`curl localhost:8080/api/transaction/b3d9ec76-3b1d-4e87-8b45-2291c8643218`
+`curl localhost:8080/kanban`
 
-example error response
 ```json
 {
-    "error": "transactionId not in database"
+	"message": "Unable to find requested resource",
+	"error": "Not Found",
+	"status": 404
 }
 ```
 
 ### Avvertenze
 
-Mandare richieste ![][GET] con Body non vuoto o ![][POST] con parametri url non provoca il crash del server, nè viene restituito un errore solo perchè sono presenti informazioni in luoghi poco consoni. 
+Mandare richieste ![][GET] con Body non vuoto o ![][POST] con parametri url non provoca il crash del server.
+Non viene restituito un errore solo perchè sono presenti informazioni in luoghi poco consoni.
 Una ![][POST] con parametri url invece ma senza body restituirà un errore perchè è assente il body, il resto viene ignorato.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
