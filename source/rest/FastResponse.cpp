@@ -8,6 +8,8 @@ void rest::sendError(proxygen::ResponseBuilder& builder, int status_code,
 
   Json::Value object = Json::objectValue;
   object["error"] = error_msg;
+  object["status"] = status_code;
+  object["message"] = status_msg;
   std::string result = utility::jsonToString(object);
 
   builder
