@@ -7,10 +7,10 @@
 #include <string>
 
 namespace static_engine {
-    namespace validation {
-            std::string validatePath(std::string filepath);
-            std::string getContentType(std::string filepath);
-    }
+  namespace validation {
+    std::string validatePath(std::string filepath);
+    std::string getContentType(std::string filepath);
+  }
 }
 
 #endif

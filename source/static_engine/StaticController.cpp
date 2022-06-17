@@ -40,9 +40,9 @@ namespace static_engine {
 
     // init response
     proxygen::ResponseBuilder(downstream_)
-        .status(200, "Ok")
-        .header("Content-Type", validation::getContentType(this->filepath))
-        .send();
+      .status(200, "Ok")
+      .header("Content-Type", validation::getContentType(this->filepath))
+      .send();
 
     // start read iter
     readFileScheduled_ = true;

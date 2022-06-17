@@ -17,24 +17,24 @@
 
 namespace server {
 
-    class ServerPool {
-        private:
-            std::vector<proxygen::HTTPServer::IPConfig>* serverAddresses = NULL;
-            int concurrency = 1;
-            proxygen::HTTPServer* server = NULL;
+  class ServerPool {
+  private:
+    std::vector<proxygen::HTTPServer::IPConfig>* serverAddresses = NULL;
+    int concurrency = 1;
+    proxygen::HTTPServer* server = NULL;
 
-            void setupAddress(std::string ADDRESS, int PORT);
-            void setupConcurrency(int THREADS_NUMBER);
-            void setupServerPool();
-            void setup(int HTTP_PORT, std::string HTTP_ADDRESS, int SERVER_THREADS);
-        public:
+    void setupAddress(std::string ADDRESS, int PORT);
+    void setupConcurrency(int THREADS_NUMBER);
+    void setupServerPool();
+    void setup(int HTTP_PORT, std::string HTTP_ADDRESS, int SERVER_THREADS);
+  public:
 
-            ServerPool(int HTTP_PORT, std::string HTTP_ADDRESS, int SERVER_THREADS);
-            ServerPool(int SERVER_THREADS);
-            ~ServerPool();
+    ServerPool(int HTTP_PORT, std::string HTTP_ADDRESS, int SERVER_THREADS);
+    ServerPool(int SERVER_THREADS);
+    ~ServerPool();
 
-            int run();
-    };
+    int run();
+  };
 
 }
 

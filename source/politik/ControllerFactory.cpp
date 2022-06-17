@@ -6,7 +6,6 @@
 #include "../rest/ApiAccountController.hpp"
 #include "../rest/ApiTransactionDetailsController.hpp"
 #include "../rest/ApiAccountDetailsController.hpp"
-#include "../rest/WrongPathController.hpp"
 #include "../static_engine/StaticController.hpp"
 
 void politik::ControllerFactory::onServerStart(folly::EventBase* /*evb*/) noexcept {}
@@ -14,8 +13,8 @@ void politik::ControllerFactory::onServerStart(folly::EventBase* /*evb*/) noexce
 void politik::ControllerFactory::onServerStop() noexcept {}
 
 proxygen::RequestHandler* politik::ControllerFactory::onRequest(
-        proxygen::RequestHandler* /*handler*/,
-        proxygen::HTTPMessage* message) noexcept {
+								proxygen::RequestHandler* /*handler*/,
+								proxygen::HTTPMessage* message) noexcept {
   if (message->getPath() == "/api/account") {
     return new rest::ApiAccountController();
   } else if (message->getPath() == "/api/transfer") {
@@ -30,13 +29,3 @@ proxygen::RequestHandler* politik::ControllerFactory::onRequest(
     return new static_engine::StaticController(message->getPath());
   }
 }
-
-/* 
- * For Browser
- *      /{path_to_file}
- * For Curler
- *      /api/account
- *      /api/account/{accountId}
- *
- *
- * */

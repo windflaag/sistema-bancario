@@ -10,7 +10,7 @@ namespace rest {
   }
 
   void RestEndpointController::onRequest(
-		 std::unique_ptr<proxygen::HTTPMessage> /*headers*/) noexcept {
+					 std::unique_ptr<proxygen::HTTPMessage> /*headers*/) noexcept {
     // empty
   }
     

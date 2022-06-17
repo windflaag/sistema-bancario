@@ -3,12 +3,12 @@
 #include <algorithm>
 
 bool politik::detection::detectBrowserInUserAgent(std::string userAgent) {
-    return (
-        utility::findSubstring(userAgent, "Mozilla") ||
-        utility::findSubstring(userAgent, "WebKit") ||
-        utility::findSubstring(userAgent, "Chrome") ||
-        utility::findSubstring(userAgent, "Gecko")
-    );
+  return (
+	  utility::findSubstring(userAgent, "Mozilla") ||
+	  utility::findSubstring(userAgent, "WebKit") ||
+	  utility::findSubstring(userAgent, "Chrome") ||
+	  utility::findSubstring(userAgent, "Gecko")
+	  );
 }
 
 inline bool detectByBase(std::string base, std::string path) {
@@ -21,10 +21,6 @@ inline bool detectByBase(std::string base, std::string path) {
 
 bool politik::detection::detectAccountId(std::string path) {
   return detectByBase("/api/account", path);
-}
-
-bool politik::detection::detectStatic(std::string path) {
-  return detectByBase("/static", path);
 }
 
 bool politik::detection::detectTransactionId(std::string path) {

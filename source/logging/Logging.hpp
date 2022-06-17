@@ -6,13 +6,13 @@
 #define DEFAULT_LOG_PATH "./log/"
 
 namespace logging {
-    class Logger {
-        private:
-            std::string logpath;
-        public:
-            Logger();
-            void log(std::string level, std::string message) const;
-    };
+  class Logger {
+  private:
+    std::string logpath;
+  public:
+    Logger();
+    void log(std::string level, std::string message) const;
+  };
 }
 
 #endif

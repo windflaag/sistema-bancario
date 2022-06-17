@@ -63,27 +63,30 @@ void rest::ApiAccountController::onRequest
     }
   } else {
     this->alreadySent = true;
-      rest::sendError(builder, 501, "Not Implemented", "method not implemented");
+    rest::sendError(builder, 501, "Not Implemented", "method not implemented");
     return;
   }
 }
 
 void rest::ApiAccountController::onEOM() noexcept {
   proxygen::ResponseBuilder builder(downstream_);
-  if (
-      !(this->body_) ||
-      (this->body_->size() == 0)) {
-    if (!(this->alreadySent))
-      rest::sendError(builder, 400, "Bad Request", "body is empty");
+
+  // already replied in onRequest
+  if (this->alreadySent)
+    return;
+
+  // body doesn't exists or is empty
+  if (!(this->body_) || (this->body_->size() == 0)) {
+    rest::sendError(builder, 400, "Bad Request", "body is empty");
     return;
   }
 
- Json::Value parameters;
+  Json::Value parameters;
   try {
     parameters = codec::parseBody(this->body_.get());
   } catch(...) {
-      rest::sendError(builder, 400, "Bad Request", "cannot parse body");
-      return;
+    rest::sendError(builder, 400, "Bad Request", "cannot parse body");
+    return;
   }
 
   if (
@@ -116,7 +119,7 @@ void rest::ApiAccountController::onEOM() noexcept {
       .sendWithEOM();
     return;
   } catch(...) {
-      rest::sendError(builder, 409, "Conflict", "conflict with existing data");
+    rest::sendError(builder, 409, "Conflict", "conflict with existing data");
     return;
   }
 }

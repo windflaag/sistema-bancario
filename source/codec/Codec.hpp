@@ -7,15 +7,15 @@
 
 namespace codec {
 
-    std::string to_hex(unsigned char s);
-    std::string sha256(std::string);
-    std::string computeAccountId(std::string name,
-                                 std::string surname);
-    std::string computeUUID();
+  std::string to_hex(unsigned char s);
+  std::string sha256(std::string);
+  std::string computeAccountId(std::string name,
+			       std::string surname);
+  std::string computeUUID();
 
-    Json::Value parseUrlEncoded(std::string* urlencoded);
-    Json::Value parseJSON(std::string* json);
-    Json::Value parseBody(std::string* body);
+  Json::Value parseUrlEncoded(std::string* urlencoded);
+  Json::Value parseJSON(std::string* json);
+  Json::Value parseBody(std::string* body);
 }
 
 #endif

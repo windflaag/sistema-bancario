@@ -95,11 +95,14 @@ void rest::ApiAccountDetailsController::onRequest
 
 void rest::ApiAccountDetailsController::onEOM() noexcept {
   proxygen::ResponseBuilder builder(downstream_);
-  if (
-      !(this->body_) ||
-      (this->body_->size() == 0)) {
-    if (!(this->alreadySent))
-      rest::sendError(builder, 400, "Bad Request", "body is empty");
+
+  // already replied in onRequest
+  if (this->alreadySent)
+    return;
+
+  // body doesn't exists or is empty
+  if (!(this->body_) || (this->body_->size() == 0)) {
+    rest::sendError(builder, 400, "Bad Request", "body is empty");
     return;
   }
 
@@ -107,107 +110,107 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
   try {
     parameters = codec::parseBody(this->body_.get());
   } catch(...) {
-      rest::sendError(builder, 400, "Bad Request", "cannot parse body");
-      return;
+    rest::sendError(builder, 400, "Bad Request", "cannot parse body");
+    return;
   }
 
   // split account to invoked method
   if (this->invokedMethod == proxygen::HTTPMethod::POST) {
-      if (
-          (!(parameters.isObject())) ||
-          (! parameters.isMember("amount")) ||
-          (! parameters["amount"].isInt())
-          ) {
-	rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
-        return;
+    if (
+	(!(parameters.isObject())) ||
+	(! parameters.isMember("amount")) ||
+	(! parameters["amount"].isInt())
+	) {
+      rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
+      return;
+    }
+
+    try {
+      int amount = parameters["amount"].asInt();
+      std::string timestamp = utility::getCurrentTimeStampString();
+
+      std::string transactionId = codec::computeUUID();
+      if (amount >= 0)
+	database::insertPayment(transactionId, this->accountId, amount, timestamp);
+      else {
+	Json::Value* currentCredit = database::getCredit(this->accountId);
+	if (currentCredit->asInt() < amount) {
+	  delete currentCredit;
+	  rest::sendError(builder, 400, "Bad Request", "not enouth money for withdraw");
+	  return;
+	} else {
+	  delete currentCredit;
+	}
+	database::insertWithdraw(transactionId, this->accountId, -amount, timestamp);
       }
 
-      try {
-        int amount = parameters["amount"].asInt();
-        std::string timestamp = utility::getCurrentTimeStampString();
+      Json::Value* newCredit = database::getCredit(this->accountId);
 
-        std::string transactionId = codec::computeUUID();
-        if (amount >= 0)
-            database::insertPayment(transactionId, this->accountId, amount, timestamp);
-        else {
-            Json::Value* currentCredit = database::getCredit(this->accountId);
-            if (currentCredit->asInt() < amount) {
-                delete currentCredit;
-		rest::sendError(builder, 400, "Bad Request", "not enouth money for withdraw");
-		return;
-            } else {
-                delete currentCredit;
-            }
-            database::insertWithdraw(transactionId, this->accountId, -amount, timestamp);
-        }
-
-        Json::Value* newCredit = database::getCredit(this->accountId);
-
-        Json::Value object = Json::objectValue;
-        object["credit"] = *newCredit;
-        object["transaction"] = transactionId;
+      Json::Value object = Json::objectValue;
+      object["credit"] = *newCredit;
+      object["transaction"] = transactionId;
         
-        delete newCredit;
-        std::string result = utility::jsonToString(object);
+      delete newCredit;
+      std::string result = utility::jsonToString(object);
 
-        builder
-          .status(201, "Created")
-          .header("Content-Type", "application/json")
-          .body(result)
-          .sendWithEOM();
-        return;
-      } catch(std::exception &err) {
-	rest::sendError(builder, 400, "Bad Request", "not enouth money on account");
-        return;
-      }
+      builder
+	.status(201, "Created")
+	.header("Content-Type", "application/json")
+	.body(result)
+	.sendWithEOM();
+      return;
+    } catch(std::exception &err) {
+      rest::sendError(builder, 400, "Bad Request", "not enouth money on account");
+      return;
+    }
   } else if (this->invokedMethod == proxygen::HTTPMethod::PUT) {
     if (
-          (!(parameters.isObject())) ||
-          (! parameters.isMember("name")) ||
-          (! parameters.isMember("surname")) ||
-          (! parameters["surname"].isString()) ||
-          (! parameters["name"].isString()) ||
-          (! Validation::validateName(parameters["name"].asString())) ||
-          (! Validation::validateName(parameters["surname"].asString()))
-          ) {
+	(!(parameters.isObject())) ||
+	(! parameters.isMember("name")) ||
+	(! parameters.isMember("surname")) ||
+	(! parameters["surname"].isString()) ||
+	(! parameters["name"].isString()) ||
+	(! Validation::validateName(parameters["name"].asString())) ||
+	(! Validation::validateName(parameters["surname"].asString()))
+	) {
       rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
       return;
     }
     
     try {
-        std::string name = parameters["name"].asString();
-        std::string surname = parameters["surname"].asString();
+      std::string name = parameters["name"].asString();
+      std::string surname = parameters["surname"].asString();
 
-        database::updateNameAndSurname(this->accountId, name, surname);
+      database::updateNameAndSurname(this->accountId, name, surname);
 
-        builder
-          .status(200, "OK")
-          .sendWithEOM();
-        return;
-      } catch(...) {
-	rest::sendError(builder, 409, "Conflict", "conflict with existing data");
-        return;
-      }
+      builder
+	.status(200, "OK")
+	.sendWithEOM();
+      return;
+    } catch(...) {
+      rest::sendError(builder, 409, "Conflict", "conflict with existing data");
+      return;
+    }
 
   } else if (this->invokedMethod == proxygen::HTTPMethod::PATCH) {
     if (
-          (!(parameters.isObject())) ||
-          (
-           (! parameters.isMember("name")) &&
-           (! parameters.isMember("surname"))) ||
-          (
-           (parameters.isMember("name")) &&
-           (parameters.isMember("surname")))
-          ) {
+	(!(parameters.isObject())) ||
+	(
+	 (! parameters.isMember("name")) &&
+	 (! parameters.isMember("surname"))) ||
+	(
+	 (parameters.isMember("name")) &&
+	 (parameters.isMember("surname")))
+	) {
       rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
-        return;
+      return;
     }
    
     if (parameters.isMember("name")) {
       if (
-            (! parameters["name"].isString()) ||
-            (! Validation::validateName(parameters["name"].asString()))
-        ) {
+	  (! parameters["name"].isString()) ||
+	  (! Validation::validateName(parameters["name"].asString()))
+	  ) {
 	rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
         return;
       }
@@ -226,11 +229,11 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
         return;
       }
     } else {
-       if (
-            (! parameters["surname"].isString()) ||
-            (! Validation::validateName(parameters["surname"].asString()))
-        ) {
-	 rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
+      if (
+	  (! parameters["surname"].isString()) ||
+	  (! Validation::validateName(parameters["surname"].asString()))
+	  ) {
+	rest::sendError(builder, 400, "Bad Request", "arguments are invalid");
         return;
       }
 

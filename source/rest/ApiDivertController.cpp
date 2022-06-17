@@ -27,17 +27,20 @@ void rest::ApiDivertController::onRequest
 
 void rest::ApiDivertController::onEOM() noexcept {
   proxygen::ResponseBuilder builder(downstream_);
-  if (
-      !(this->body_) ||
-      (this->body_->size() == 0)) {
-    if (!(this->alreadySent))
-      rest::sendError(builder, 400, "Bad Request", "body is empty");
+
+  // already replied in onRequest
+  if (this->alreadySent)
+    return;
+
+  // body doesn't exists or is empty
+  if (!(this->body_) || (this->body_->size() == 0)) {
+    rest::sendError(builder, 400, "Bad Request", "body is empty");
     return;
   }
   
   Json::Value parameters;
   try {
-      parameters = codec::parseBody(this->body_.get());
+    parameters = codec::parseBody(this->body_.get());
   } catch(...) {
     rest::sendError(builder, 400, "Bad Request", "cannot parse body");
     return;

@@ -52,6 +52,8 @@ std::string codec::sha256(std::string text) {
 std::string codec::computeAccountId(std::string name,
                                     std::string surname) {
   auto randomizer = singleton::instance()->getRandomizer();
+
+  // hash string: name + surname + random_number
   return codec::sha256(name + surname + std::to_string(randomizer->operator()())).substr(0, 20);
 }
 
