@@ -86,9 +86,11 @@ Distributed under the BEERWARE License. See `LICENSE` for more information.
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
+[GET_BADGE]: https://img.shields.io/badge/-GET-green
+
 ### Endpoint standard (dalla Traccia 2)
 
-#### GET  /api/account
+#### [GET_BADGE] /api/account
 
 `curl localhost:8080/api/account`
 
@@ -224,7 +226,6 @@ ritorna l'id della transazione e il nuovo credito degli account coinvolti.
 
 
 example response
-```json
 
 
 `curl -X POST -d "{\"id\": \"f0783c9e-4f27-4389-aff7-7b3d1e8f47a3\"}" localhost:8080/api/divert`
