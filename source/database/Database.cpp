@@ -144,7 +144,7 @@ Json::Value* database::getTransactions(std::string accountId) {
   Json::Value* data = database::launchQuery(
 						      "select transactionId from Transactions where (fromId = \"" + accountId +
 						      "\") or (toId = \"" + accountId +
-						      "\" and fromId is NULL) order by timestamp;"
+						      "\" and fromId is NULL);"
 						      );
 
   Json::Value* array = new Json::Value(Json::arrayValue);

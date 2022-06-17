@@ -168,15 +168,16 @@ def testSucc(LENGTH = 17):
     id = tanzomat.addAccount("Francesco", "Refolli")
     id2 = tanzomat.addAccount("Lara", "Refolli")
     print(id)
-    for _ in range(LENGTH):
-        amount = random_amount()
-        print(f"#{_} of {amount} ==> {tanzomat.payment(amount, id)}")
+    print(id2)
     print()
-    for _ in range(LENGTH):
-        amount = random_amount()
-        print(f"#{_} of {amount} ==> {tanzomat.withdraw(amount, id)}")
+    
+    amount = random_amount()
+    print(f"payment of {amount} ==> {tanzomat.payment(amount, id)}")
 
-    tanzomat.transfer(id, 1, id2)
+    amount = random_amount()
+    print(f"payment of {amount} ==> {tanzomat.payment(amount, id2)}")
+
+    print()
 
 if __name__=="__main__":
     testApi(17)

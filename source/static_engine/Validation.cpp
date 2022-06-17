@@ -30,5 +30,5 @@ std::string static_engine::validation::getContentType(std::string filepath) {
     }
     
     // else threat it like a monster
-    return "text/plain";
+    return "text/html";
 }

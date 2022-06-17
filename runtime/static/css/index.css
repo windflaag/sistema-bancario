@@ -127,6 +127,7 @@ div.inputForm input[type=text] {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    text-align: center;
 }
 
 div.inputForm button {
@@ -154,4 +155,13 @@ div.inputForm {
 
 div.inputForm label {
     font-size: 25px;
+}
+
+/* transfer (info) board */
+
+div.transferBoard {
+    margin: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
 }

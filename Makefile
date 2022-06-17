@@ -23,6 +23,7 @@ clean:
 	make -C ./runtime clean
 	rm -rf deps && mkdir deps
 	rm -rf build && mkdir build
+	@ echo -e emacs files to be cleaned: $$(find -name "*~" | xargs)
 
 rebase:
 	rm -rf ./runtime/database.db

@@ -1,5 +1,5 @@
 #!/bin/bash
-BUILD_SPEED=1
+BUILD_SPEED=$(nproc --all)
 NEEDED_PACKAGES="automake autoconf boost boost-libs double-conversion fmt gflags git google-glog gperf gtest jsoncpp libevent libsodium lz4 openssl python snappy sqlite zstd zlib ninja cmake libtool xz openssl"
 
 function install_repo_deps () {
@@ -8,7 +8,7 @@ function install_repo_deps () {
 }
 
 function install_folly () {
-    if [[ ! -f /usr/local/lib/libfolly.a ]]; then
+    if [[ (! -f /lib/libfolly.a) && (! -f /usr/local/lib/libfolly.a) ]]; then
         echo -e "[building] folly"
         git clone https://github.com/windflaag/folly.git
         cd folly/build
@@ -23,7 +23,7 @@ function install_folly () {
 }
 
 function install_fizz () {
-    if [[ ! -f /usr/local/lib/libfizz.a ]]; then
+    if [[ (! -f /lib/libfizz.a) && (! -f /usr/local/lib/libfizz.a) ]]; then
         echo -e "[building] fizz"
         git clone https://github.com/windflaag/fizz.git
         mkdir fizz/build_ && cd fizz/build_
@@ -38,7 +38,7 @@ function install_fizz () {
 }
 
 function install_wangle () {
-    if [[ ! -f /usr/local/lib/libwangle.a ]]; then
+    if [[ (! -f /lib/libwangle.a) && (! -f /usr/local/lib/libwangle.a) ]]; then
         echo -e "[building] wangle"
         git clone https://github.com/windflaag/wangle.git
         mkdir wangle/build_ && cd wangle/build_
@@ -53,7 +53,7 @@ function install_wangle () {
 }
 
 function install_mvfst () {
-    if [[ -z "$(find /usr/local/lib -name 'libmvfst*.a')" ]]; then
+    if [[ (-z "$(find /lib -name 'libmvfst*.a')") && (-z "$(find /usr/local/lib -name 'libmvfst*.a')") ]]; then
         echo -e "[building] mvfst"
         git clone https://github.com/windflaag/mvfst.git
         mkdir mvfst/build_ && cd mvfst/build_
@@ -68,7 +68,7 @@ function install_mvfst () {
 }
 
 function install_proxygen () {
-    if [[ ! -f /usr/local/lib/libproxygen.a ]]; then
+    if [[ (! -f /lib/libproxygen.a) && (! -f /usr/local/lib/libproxygen.a) ]]; then
         echo -e "[building] proxygen"
         git clone https://github.com/windflaag/proxygen.git
         mkdir proxygen/build_ && cd proxygen/build_

@@ -6,12 +6,15 @@ function createParagraph(text) {
     return paragraph;
 }
 
-function createInfoCard(description, thing) {
+function createInfoCard(description, things) {
     let infoCard = document.createElement("div");
     infoCard.setAttribute("class", "infoCard");
 
     infoCard.appendChild(createParagraph(description));
-    infoCard.appendChild(createParagraph(thing));
+    things.forEach((thing) => {
+	infoCard.appendChild(createParagraph(thing));
+    });
+    
     return infoCard;
 }
 
@@ -20,9 +23,9 @@ function createInfoBoard(identity, accountId, credit) {
     infoBoard.setAttribute("class", "infoBoard");
     infoBoard.setAttribute("id", "theInfoBoard");
 
-    infoBoard.appendChild(createInfoCard("Identity", identity));
-    infoBoard.appendChild(createInfoCard("AccountID", accountId));
-    infoBoard.appendChild(createInfoCard("Credit", credit));
+    infoBoard.appendChild(createInfoCard("Identity", [identity]));
+    infoBoard.appendChild(createInfoCard("AccountID", [accountId]));
+    infoBoard.appendChild(createInfoCard("Credit", [credit]));
 
     return infoBoard;
 }
@@ -34,6 +37,8 @@ async function resetInfoBoard(identity, accountId, credit) {
     let gateway = document.getElementById("screen");
     gateway.replaceChild(newInfoBoard, oldInfoBoard);
 }
+
+/* transaction table */
 
 function createTableHeader(header) {
     let th = document.createElement("th");
@@ -109,15 +114,27 @@ function createTableRow(data, accountId) {
 function populateTransactionTable(transactionData, accountId) {
     let tr = createTableRow(transactionData, accountId);
     let ingress = document.getElementById("theTransactionIngress");
-    ingress.prepend(tr);
+    let placeholder = document.getElementById(transactionData.transactionId);
+    ingress.replaceChild(tr, placeholder);
+}
+
+function createTransactionPlaceholder(transactionId) {
+    let placeholder = document.createElement("div");
+    placeholder.setAttribute("id", transactionId);
+    return placeholder
 }
 
 function fetchTransactionData(transactionId, accountId) {
+    // insert placeholder in order to preserve order
+    let ingress = document.getElementById("theTransactionIngress");
+    ingress.prepend(createTransactionPlaceholder(transactionId));
+
     $.ajax({
 	method: "GET",
-	url: `/api/transaction/${transactionId}`
+	url: `/api/transaction/${transactionId}`,
     })
 	.fail(async (jqXHR, textStatus, errorThrown) => {
+	    let placeholder = document.getElementById(transactionId); placeholder.remove();
 	    alertUserThatHappened(`unable to fetch data for transactionId = ${transactionId}`);
 	})
 	.done(async (data) => {
@@ -140,10 +157,13 @@ async function resetTransactionTable(transactionIDs, accountId) {
     schedulePopulation(transactionIDs, accountId);
 }
 
+/* fetch information for index */
+
 async function fetchAccountDetail(accountId) {
     $.ajax({
 	method: "GET",
-	url: `/api/account/${accountId}`
+	url: `/api/account/${accountId}`,
+	async: true
     })
 	.fail(async (jqXHR, textStatus, errorThrown) => {
 	    alertUserThatHappened(`unable to fetch data for accountID = ${accountId}`);
@@ -189,4 +209,72 @@ function alertUserThatHappened(something) {
     banner.className = "show";
 
     setTimeout(function(){ banner.className = banner.className.replace("show", ""); }, 3000);
+}
+
+/* transfer board */
+
+function createTransferBoard(data, senderId, recipientId, amount) {
+    let infoBoard = document.createElement("div");
+    infoBoard.setAttribute("class", "transferBoard");
+    infoBoard.setAttribute("id", "theTransferBoard");
+
+    infoBoard.appendChild(createInfoCard("Sender", [senderId, data[senderId]]))
+    infoBoard.appendChild(createInfoCard("Data", [data["transaction"], amount]));
+    infoBoard.appendChild(createInfoCard("Recipient", [recipientId, data[recipientId]]));
+
+    return infoBoard;
+}
+
+async function resetTransferBoard(data, senderId, recipientId, amount) {
+    let oldTransferBoard = document.getElementById("theTransferBoard");
+    let newTransferBoard = createTransferBoard(data, senderId, recipientId, amount);
+
+    let gateway = document.getElementById("screen");
+    gateway.replaceChild(newTransferBoard, oldTransferBoard);
+}
+
+/* enqueue transaction */
+
+function enqueueTransaction(senderId, recipientId, amount) {
+    let payload = {
+	    from: senderId,
+	    to: recipientId,
+	    amount: amount
+    };
+    
+    console.log(payload);
+    $.ajax({
+	url: "/api/transfer",
+	data: JSON.stringify(payload),
+	contentType: 'application/json',
+	dataType: 'json',
+	method: "POST",
+	async: true
+    })
+	.fail((jqXHR, Code, Error) => {
+	    alertUserThatHappened(`Bad Request: ${jqXHR.responseJSON.error}`);
+	})
+	.done((data) => {
+	    resetTransferBoard(data, senderId, recipientId, amount);
+	})
+}
+
+function transfer() {
+    let senderId = document.getElementById("inputSenderAccountId").value;
+    let recipientId = document.getElementById("inputRecipientAccountId").value;
+    let amount = parseInt(document.getElementById("inputAmount").value);
+
+    if (validateAccountId(senderId)) {
+	if (validateAccountId(recipientId)) {
+	    if ((!isNaN(amount)) && amount >= 0) {
+		enqueueTransaction(senderId, recipientId, amount);
+	    } else {
+		alertUserThatHappened(`insert amount = "${amount}", is invalid`);
+	    }
+	} else {
+	    alertUserThatHappened(`insert recipientID = "${recipientId}", is invalid`);
+	}
+    } else {
+	alertUserThatHappened(`insert senderID = "${senderId}", is invalid`);
+    }
 }
