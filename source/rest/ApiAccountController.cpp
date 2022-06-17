@@ -105,10 +105,14 @@ void rest::ApiAccountController::onEOM() noexcept {
     std::string accountId = codec::computeAccountId(name, surname);
 
     database::insertAccount(accountId, name, surname);
+    Json::Value object = Json::objectValue;
+    object["accountId"] = accountId;
+    std::string result = utility::jsonToString(object);
 
     builder
       .status(201, "Created")
-      .body(accountId)
+      .header("Content-Type", "application/json")
+      .body(result)
       .sendWithEOM();
     return;
   } catch(...) {

@@ -16,9 +16,9 @@ Se si possiede un AUR helper, su AUR è presente un pacchetto che installa da so
 
 Tutta via si *consiglia fortemente* di usare ugualmente lo script citato per controllare di soddisfare tutti i requisiti.
 Il primo metodo è comunque *preferibile* in quanto è quanto più 'aggiornato' e 'controllato'.
+Infatti i repository di git da cui scarica le librerie sono fork pubblici recenti creati da me per controllare meglio il processo di compilazione.
 
 E' necessario avere installati alcuni tool per c++ e librerie annesse che sono presenti nei repository ufficiali di Arch Linux. La lista è presente nei passi di installazione (e vengono installati automaticamente dal mio script)
-Infatti i repository di git da cui scarica le librerie sono fork pubblici recenti creati da me per controllare meglio il processo di compilazione.
 
 ### Steps
 
@@ -28,7 +28,7 @@ Infatti i repository di git da cui scarica le librerie sono fork pubblici recent
 
 usando `sudo pacman -Syu --needed` si devono installare i seguenti software:
 
- - automake autoconf boost boost-libs double-conversion fmt gflags git google-glog gperf gtest jsoncpp libevent libsodium lz4 openssl python snappy sqlite zstd zlib ninja cmake libtool xz openssl
+ - clang automake autoconf boost boost-libs double-conversion fmt gflags git google-glog gperf gtest jsoncpp libevent libsodium lz4 openssl python snappy sqlite zstd zlib ninja cmake libtool xz
 
 poi usando l'AUR helper scelto installare proxygen:
 
@@ -59,7 +59,31 @@ Dopo la compilazione si presenterà un eseguibile al percorso runtime/server. Qu
 
 Di seguito lascio il risultato di `ldd runtime/server` per confrontarlo con l'eseguibile ottenuto.
 ```
-
+linux-vdso.so.1 (0x00007ffc89316000)
+libsqlite3.so.0 => /usr/lib/libsqlite3.so.0 (0x00007fea174b2000)
+libssl.so.1.1 => /usr/lib/libssl.so.1.1 (0x00007fea1741b000)
+libjsoncpp.so.25 => /usr/lib/libjsoncpp.so.25 (0x00007fea173e1000)
+libfmt.so.8 => /usr/lib/libfmt.so.8 (0x00007fea1805c000)
+libz.so.1 => /usr/lib/libz.so.1 (0x00007fea173c7000)
+libbz2.so.1.0 => /usr/lib/libbz2.so.1.0 (0x00007fea18049000)
+liblzma.so.5 => /usr/lib/liblzma.so.5 (0x00007fea1739d000)
+liblz4.so.1 => /usr/lib/liblz4.so.1 (0x00007fea1737a000)
+libsnappy.so.1 => /usr/lib/libsnappy.so.1 (0x00007fea1736e000)
+libsodium.so.23 => /usr/lib/libsodium.so.23 (0x00007fea17314000)
+libunwind.so.8 => /usr/lib/libunwind.so.8 (0x00007fea172fa000)
+libzstd.so.1 => /usr/lib/libzstd.so.1 (0x00007fea17251000)
+libcrypto.so.1.1 => /usr/lib/libcrypto.so.1.1 (0x00007fea16e00000)
+libglog.so.1 => /usr/lib/libglog.so.1 (0x00007fea17219000)
+libgflags.so.2.2 => /usr/lib/libgflags.so.2.2 (0x00007fea171ec000)
+libdouble-conversion.so.3 => /usr/lib/libdouble-conversion.so.3 (0x00007fea171d6000)
+libboost_context.so.1.79.0 => /usr/lib/libboost_context.so.1.79.0 (0x00007fea171d1000)
+libevent-2.1.so.7 => /usr/lib/libevent-2.1.so.7 (0x00007fea17178000)
+libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0x00007fea16a00000)
+libm.so.6 => /usr/lib/libm.so.6 (0x00007fea16d19000)
+libgcc_s.so.1 => /usr/lib/libgcc_s.so.1 (0x00007fea17156000)
+libc.so.6 => /usr/lib/libc.so.6 (0x00007fea16600000)
+/lib64/ld-linux-x86-64.so.2 => /usr/lib64/ld-linux-x86-64.so.2 (0x00007fea1808b000)
+libpthread.so.0 => /usr/lib/libpthread.so.0 (0x00007fea17151000)
 ```
 
 # Guida all'uso
