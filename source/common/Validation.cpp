@@ -54,7 +54,7 @@ bool charIsValidForName(char c) {
   return (
 	  (c >= 'A' && c <= 'Z') ||
 	  (c >= 'a' && c <= 'z') ||
-	  c == ' '
+	  c == ' ' || c == '.'
 	  );
 }
 

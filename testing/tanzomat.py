@@ -1,38 +1,85 @@
 #!/usr/bin/env python3
 
-import multiprocessing, requests, random
+import json, time, string, csv, multiprocessing, requests, random
+
+def random_name():
+    return "".join([ random.choice(string.ascii_lowercase + string.ascii_uppercase + ". ") for _ in range(random.randint(0, 80)) ])
 
 def bombardt(METHOD, URL, PAYLOAD = None):
+    if METHOD == "HEAD":
+        return requests.head(URL)
+    elif METHOD == "GET":
+        return requests.get(URL)
+    elif METHOD == "POST":
+        return requests.post(URL, json = PAYLOAD)
+    elif METHOD == "PUT":
+        return requests.put(URL, json = PAYLOAD)
+    elif METHOD == "DELETE":
+        return requests.delete(URL)
+    elif METHOD == "PATCH":
+        return requests.patch(URL, json = PAYLOAD)
+
+HEADER = ["id", "method", "url", "payload", "code", "status", "reply"]
+def dekorat(METHOD, URL, PAYLOAD = None):
     try:
-        if METHOD == "HEAD":
-            return { "URL": URL, "code": 0, "reply": requests.head(URL) }
-        elif METHOD == "GET":
-            return { "URL": URL, "code": 0, "reply": requests.get(URL) }
-        elif METHOD == "POST":
-            return { "URL": URL, "code": 0, "reply": requests.post(URL, json = PAYLOAD) }
-        elif METHOD == "PUT":
-            return { "URL": URL, "code": 0, "reply": requests.put(URL, json = PAYLOAD) }
-        elif METHOD == "DELETE":
-            return { "URL": URL, "code": 0, "reply": requests.delete(URL) }
-        elif METHOD == "PATCH":
-            return { "URL": URL, "code": 0, "reply": requests.patch(URL, json = PAYLOAD) }
-    except Exception as ERR:
-        print(ERR)
-        return { "URL": URL, "code": 1, "reply": None }
+        data = bombardt(METHOD, URL, PAYLOAD)
+        return {
+                    "method": METHOD,
+                    "url": URL,
+                    "payload": PAYLOAD,
+                    "code": 0,
+                    "status": data.status_code,
+                    "reply": data.json()
+                }
+    except:
+        return {
+                    "method": METHOD,
+                    "url": URL,
+                    "payload": PAYLOAD,
+                    "code": 1
+                }
 
 def Kontoregistrierung(ID):
-    data = bombardt("POST", "http://localhost:8080/api/account", {})
-    data["ID"] = ID
+    data = dekorat("POST", "http://localhost:8080/api/account", {
+        "name": random_name(),
+        "surname": random_name()
+        })
+    data["id"] = ID
+    print(f"| Achtung | blitzkrieg#{ID}                 |", end="\r")
     return data
 
 def score(data):
-    return len(data) - sum([ _["code"] for _ in data ])
+    return (len(data) - sum([ _["code"] for _ in data ])) / len(data)
+
+def deposit(data, header = HEADER, path = "result.csv"):
+    with open(path, 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames = header)
+        writer.writeheader()
+        writer.writerows(data)
+
+    
+def readFile(path):
+    file = open(path, "r")
+    txt = file.read()
+    file.close()
+    return txt
+
+def loadConfig(path):
+    txt = readFile(path)
+    config = json.loads(txt)
+    return config
+ 
 
 if __name__=="__main__":
-    IDs = range(1000)
+    config = loadConfig("tanzomat.json")
+    IDs = range(config["length"])
 
-    pool = multiprocessing.Pool(17)
+    pool = multiprocessing.Pool(config["concurrency"])
+    START = time.time()
     data = pool.map(Kontoregistrierung, IDs)
+    END = time.time()
     pool.close()
 
-    print(f"score = {score(data)}")
+    deposit(data)
+    print()
+    print(f"score = {score(data)}, elapsed = {END - START} seconds!!")
