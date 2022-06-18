@@ -1,0 +1,2 @@
+tanze:
+	./tanzomat.py

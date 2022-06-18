@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import requests, json, random
+import requests, json, random, csv
 import multiprocessing, multiprocessing.pool
 
 class DamonNichtProcess(multiprocessing.Process):
@@ -120,14 +120,16 @@ class Orkan:
         try:
             record["reply"] = [ _ for _ in result.body.json() ]
         except:
-            pass
+            record["reply"] = None
         
         return record
     
     def angreifen(self):
         queue = [ random.choice(self.targets) for _ in range(self.length) ]
-        with Schwimmbad(True, self.concurrency) as pool:
-            return pool.map(self.pflasten, queue)
+        pool = Schwimmbad(True, self.concurrency)
+        data = pool.map(self.pflasten, queue)
+        pool.close()
+        return data
 
 # https://en.wikipedia.org/wiki/Messerschmitt_Me_262
 class Schwalbe:
@@ -149,8 +151,10 @@ class Schwalbe:
     
     def angreifen(self):
         print(f"{self.identity} does blitzkrieg")
-        with Schwimmbad(False, self.concurrency) as pool:
-            return pool.map(Dienstprogramm.bestellenAngreifen, self.sperrfeuer)
+        pool = Schwimmbad(False, self.concurrency)
+        data = pool.map(Dienstprogramm.bestellenAngreifen, self.sperrfeuer)
+        pool.close()
+        return Dienstprogramm.concat(data)
 
 # https://en.wikipedia.org/wiki/Luftwaffe
 class Luftwaffe:
@@ -167,8 +171,10 @@ class Luftwaffe:
     
     def angreifen(self):
         print(f"Luftwaffe joins blitzkrieg")
-        with Schwimmbad(False, self.concurrency) as pool:
-            return pool.map(Dienstprogramm.bestellenAngreifen, self.herde)
+        pool = Schwimmbad(False, self.concurrency)
+        data = pool.map(Dienstprogramm.bestellenAngreifen, self.herde)
+        pool.close()
+        return Dienstprogramm.concat(data)
 
 # https://en.wikipedia.org/wiki/Wehrmacht
 class Wehrmacht:
@@ -180,8 +186,10 @@ class Wehrmacht:
     def angreifen(self):
         rustung = [ self.luftwaffe ]
         print(f"Wehrmacht starts blitzkrieg")
-        with Schwimmbad(False, self.concurrency) as pool:
-            return pool.map(Dienstprogramm.bestellenAngreifen, rustung)
+        pool = Schwimmbad(False, self.concurrency)
+        data = pool.map(Dienstprogramm.bestellenAngreifen, rustung)
+        pool.close()
+        return Dienstprogramm.concat(data)
 
 class Generator:
     def __init__(self, config):
@@ -200,7 +208,7 @@ class Dienstprogramm:
     
     @staticmethod
     def bestellenAngreifen(something):
-        something.angreifen()
+        return something.angreifen()
     
     @staticmethod
     def readFile(path):
@@ -226,10 +234,26 @@ class Dienstprogramm:
             generators[generator] = Dienstprogramm.makeGenerator(config["generators"][generator])
         
         return generators
+    
+    @staticmethod
+    def writeToCSV(path, arrayOfJSONs):
+        with open(path, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames = [ _ for _ in arrayOfJSONs[0] ])
+            writer.writeheader()
+            writer.writerows(arrayOfJSONs)
+
+    @staticmethod
+    def concat(data):
+        arr = []
+        for _ in data:
+            arr += _
+        return arr
 
 if __name__=="__main__":
     config = Dienstprogramm.loadConfig("config.json")
     generators = Dienstprogramm.makeGenerators(config)
     
     wehrmacht = Wehrmacht(config["wehrmacht"], generators)
-    print(wehrmacht.angreifen())
+    db = wehrmacht.angreifen()
+    Dienstprogramm.writeToCSV("result.csv", db)
+

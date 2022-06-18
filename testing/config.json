@@ -41,7 +41,7 @@
                 "orkans": [
                     {
                         "concurrency": 10,
-                        "length": 50,
+                        "length": 500,
                         "endpoint": "/api/account",
                         "targets": [
                             {
@@ -64,7 +64,7 @@
                     },
                     {
                         "concurrency": 10,
-                        "length": 50,
+                        "length": 500,
                         "endpoint": "/api/account",
                         "targets": [
                             {

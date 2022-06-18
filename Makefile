@@ -29,4 +29,4 @@ rebase:
 	rm -rf ./runtime/database.db
 
 tanze:
-	./tanzomat.py
+	make -C testing tanze
