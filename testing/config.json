@@ -1,0 +1,92 @@
+{
+    "generators": {
+        "randomAccountId": {
+            "type": "string",
+            "value": "random",
+            "length": 20,
+            "charset": "abcdef0123456789"
+        },
+        "randomName": {
+            "type": "string",
+            "value": "random",
+            "length": 17,
+            "charset": "abcdefghijklmnopqrstuvwxyz .ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        },
+        "randomWrongAccountId": {
+            "type": "string",
+            "value": "random",
+            "length": 19,
+            "charset": "abcdef0123456789"
+        },
+        "randomWrongName": {
+            "type": "string",
+            "value": "random",
+            "length": 81,
+            "charset": "abcdefghijklmnopqrstuvwxyz .ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        }
+    },
+    "wehrmacht": {
+        "concurrency": 1,
+        
+        "luftwaffe": {
+            "concurrency": 1,
+            "length": 10,
+            
+            "schwalbe": {
+                "concurrency": 2,
+                "host": "localhost",
+                "protocol": "http",
+                "port": 8080,
+                
+                "orkans": [
+                    {
+                        "concurrency": 10,
+                        "length": 50,
+                        "endpoint": "/api/account",
+                        "targets": [
+                            {
+                                "method": "GET"
+                            },
+                            {
+                                "method": "POST",
+                                "payload": {
+                                    "name": "randomName",
+                                    "surname": "randomName"
+                                }
+                            },
+                            {
+                                "method": "DELETE",
+                                "query": {
+                                    "id": "randomAccountId"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "concurrency": 10,
+                        "length": 50,
+                        "endpoint": "/api/account",
+                        "targets": [
+                            {
+                                "method": "GET"
+                            },
+                            {
+                                "method": "POST",
+                                "payload": {
+                                    "name": "randomWrongName",
+                                    "surname": "randomWrongName"
+                                }
+                            },
+                            {
+                                "method": "DELETE",
+                                "query": {
+                                    "id": "randomWrongAccountId"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -112,6 +112,11 @@ Distributed under the BEERWARE License. See `LICENSE` for more information.
 
 inserisci un nuovo account secondo i campi name e surname dentro il body in format JSON.
 
+i dati di tipo "Nome" (name e surname) devono essere stringhe di al massimo 80 caratteri fra:
+ - lettere dell'alfabeto [a-z] sia *maiuscole* che *minuscole*
+ - il carattere spazio ' '
+ - il carattere punto '.'
+
 `curl -X POST -d "{\"name\": \"Francesco\", \"surname\": \"Refolli\"}" localhost:8080/api/account`
 
 ```json
