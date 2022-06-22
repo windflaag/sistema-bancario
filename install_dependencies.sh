@@ -1,6 +1,6 @@
 #!/bin/bash
 BUILD_SPEED=$(nproc --all)
-NEEDED_PACKAGES="automake autoconf clang boost boost-libs double-conversion fmt gflags git google-glog gperf gtest jsoncpp libevent libsodium lz4 python snappy sqlite zstd zlib ninja cmake libtool xz openssl"
+NEEDED_PACKAGES="gcc automake autoconf clang boost boost-libs double-conversion fmt gflags git google-glog gperf gtest jsoncpp libevent libsodium lz4 python snappy sqlite zstd zlib ninja cmake libtool xz openssl"
 
 function install_repo_deps () {
     sudo pacman -Syu --needed $NEEDED_PACKAGES

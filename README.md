@@ -145,7 +145,7 @@ Content-Length: 0
 ```http
 HTTP/1.1 200 OK
 Date: Fri, 17 Jun 2022 11:09:35 GMT
-X-Sistema-Bancario: Francesco;Refolli
+X-Sistema-Bancario: Amedeo;Bianchi
 Content-Length: 0
 ```
 

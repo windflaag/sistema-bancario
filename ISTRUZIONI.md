@@ -28,7 +28,7 @@ E' necessario avere installati alcuni tool per c++ e librerie annesse che sono p
 
 usando `sudo pacman -Syu --needed` si devono installare i seguenti software:
 
- - clang automake autoconf boost boost-libs double-conversion fmt gflags git google-glog gperf gtest jsoncpp libevent libsodium lz4 openssl python snappy sqlite zstd zlib ninja cmake libtool xz
+ - gcc clang automake autoconf boost boost-libs double-conversion fmt gflags git google-glog gperf gtest jsoncpp libevent libsodium lz4 openssl python snappy sqlite zstd zlib ninja cmake libtool xz
 
 poi usando l'AUR helper scelto installare proxygen:
 
