@@ -117,7 +117,7 @@ i dati di tipo "Nome" (name e surname) devono essere stringhe di al massimo 80 c
  - il carattere spazio ' '
  - il carattere punto '.'
 
-`curl -X POST -d "{\"name\": \"Francesco\", \"surname\": \"Refolli\"}" localhost:8080/api/account`
+`curl -X POST -d "{\"name\": \"Amedeo\", \"surname\": \"Bianchi\"}" localhost:8080/api/account`
 
 ```json
 {
@@ -158,8 +158,8 @@ come HEAD, ma ritorna in formato JSON i dati dell'account.
 ```json
 {
     "credit": 0,
-    "name": "Francesco",
-    "surname": "Refolli",
+    "name": "Amedeo",
+    "surname": "Bianchi",
     "transactions": []
 }
 ```
