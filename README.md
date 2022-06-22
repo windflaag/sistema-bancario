@@ -140,7 +140,7 @@ Content-Length: 0
 
 #### ![][HEAD] /api/account/{accountId}
 
-`curl localhost:8080/api/account/d91627ab5e086f3b4b0c``
+`curl localhost:8080/api/account/d91627ab5e086f3b4b0c`
 
 ```http
 HTTP/1.1 200 OK
@@ -153,7 +153,7 @@ Content-Length: 0
 
 come HEAD, ma ritorna in formato JSON i dati dell'account.
 
-`curl localhost:8080/api/account/d91627ab5e086f3b4b0c``
+`curl localhost:8080/api/account/d91627ab5e086f3b4b0c`
 
 ```json
 {
