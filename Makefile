@@ -30,3 +30,6 @@ rebase:
 
 tanze:
 	make -C testing tanze
+
+push:
+	git add . ; git commit -m "_" ; git push

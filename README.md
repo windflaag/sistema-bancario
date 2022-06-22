@@ -194,7 +194,7 @@ inserisce un prelievo o un deposito, a seconda che amount sia < o >= 0.
 
 ritorna l'id della transazione e il nuovo credito dell'account.
 
-`curl -X POST -d "{\"amount\": 9}" localhost:8080/api/account`
+`curl -X POST -d "{\"amount\": 9}" localhost:8080/api/account/cb92b3e7a99e0d743a33`
 
 ```json
 {
@@ -209,7 +209,7 @@ inserisce una transazione con amount >= 0.
 
 ritorna l'id della transazione e il nuovo credito degli account coinvolti.
 
-`curl -X POST -d "{\"from\": \"079770774a0285b6e104\", \"to\": \"cff5b87b40e5c2b0a947\", \"amount\": 9}" localhost:8080/api/account`
+`curl -X POST -d "{\"from\": \"079770774a0285b6e104\", \"to\": \"cff5b87b40e5c2b0a947\", \"amount\": 9}" localhost:8080/api/transfer`
 
 ```json
 {
