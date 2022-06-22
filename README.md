@@ -157,7 +157,7 @@ come HEAD, ma ritorna in formato JSON i dati dell'account.
 
 ```json
 {
-    "credit": "0",
+    "credit": 0,
     "name": "Francesco",
     "surname": "Refolli",
     "transactions": []

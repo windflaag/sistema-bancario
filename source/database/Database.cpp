@@ -168,7 +168,7 @@ Json::Value* database::getAccountMetadata(std::string accountId) {
   Json::Value* metadata = new Json::Value(Json::objectValue);
   metadata->operator[]("name") = data->operator[](0)["name"];
   metadata->operator[]("surname") = data->operator[](0)["surname"];
-  metadata->operator[]("credit") = data->operator[](0)["credit"];
+  metadata->operator[]("credit") = Json::Value(std::stoi(data->operator[](0)["credit"].asString()));
   delete data;
 
   return metadata;
