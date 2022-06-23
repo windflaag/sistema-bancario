@@ -14,6 +14,7 @@ namespace rest {
     // empty
   }
     
+  // automatically fill body for endpoints which require it
   void RestEndpointController::onBody(std::unique_ptr<folly::IOBuf> body) noexcept {
     if (!(this->body_))
       this->body_ = std::unique_ptr<std::string>(new std::string());

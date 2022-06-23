@@ -115,6 +115,7 @@ void rest::ApiAccountController::onEOM() noexcept {
     builder
       .status(201, "Created")
       .header("Content-Type", "application/json")
+      .header("Location", "/api/account/" + accountId)
       .body(result)
       .sendWithEOM();
     return;

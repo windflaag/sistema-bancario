@@ -273,8 +273,12 @@ Quindi ritorna un JSON contenente il codice di status precedentemente settato, l
 
 ### Avvertenze
 
+Tutte le richieste ![][POST] che vengono eseguite con successo restituiscono nel header field `Location` l'indirizzo alla risorsa creata.
+
 Mandare richieste ![][GET] con Body non vuoto o ![][POST] con parametri url non provoca il crash del server.
+
 Non viene restituito un errore solo perchè sono presenti informazioni in luoghi poco consoni.
-Una ![][POST] con parametri url invece ma senza body restituirà un errore perchè è assente il body, il resto viene ignorato.
+
+Una ![][POST] con parametri url ma senza body restituirà un errore solo perché è assente il body, il resto viene ignorato.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
