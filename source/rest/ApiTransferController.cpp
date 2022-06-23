@@ -82,7 +82,7 @@ void rest::ApiTransferController::onEOM() noexcept {
     Json::Value object = Json::objectValue;
     object[fromId] = fromCredit->asInt() - amount;
     object[toId] = toCredit->asInt() + amount;
-    object["transaction"] = transactionId;
+    object["transactionId"] = transactionId;
     
     delete fromCredit; delete toCredit;
     std::string result = utility::jsonToString(object);

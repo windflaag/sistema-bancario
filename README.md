@@ -199,7 +199,7 @@ ritorna l'id della transazione e il nuovo credito dell'account.
 ```json
 {
     "credit": 9,
-    "transaction": "3a1d8e47-2311-4844-998c-46a351a8542a"
+    "transactionId": "3a1d8e47-2311-4844-998c-46a351a8542a"
 }
 ```
 
@@ -215,7 +215,7 @@ ritorna l'id della transazione e il nuovo credito degli account coinvolti.
 {
     "079770774a0285b6e104": 1,
     "cff5b87b40e5c2b0a947": 98,
-    "transaction":"f0783c9e-4f27-4389-aff7-7b3d1e8f47a3"
+    "transactionId":"f0783c9e-4f27-4389-aff7-7b3d1e8f47a3"
 }
 ```
 
@@ -231,7 +231,7 @@ ritorna l'id della transazione e il nuovo credito degli account coinvolti.
 {
     "079770774a0285b6e104": 0,
     "cff5b87b40e5c2b0a947": 99,
-    "transaction": "229148a4-d2e9-447a-be9f-cf67b3592c96"
+    "transactionId": "229148a4-d2e9-447a-be9f-cf67b3592c96"
 }
 ```
 

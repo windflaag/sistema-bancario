@@ -148,7 +148,7 @@ void rest::ApiAccountDetailsController::onEOM() noexcept {
 
       Json::Value object = Json::objectValue;
       object["credit"] = *newCredit;
-      object["transaction"] = transactionId;
+      object["transactionId"] = transactionId;
         
       delete newCredit;
       std::string result = utility::jsonToString(object);

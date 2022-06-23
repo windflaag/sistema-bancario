@@ -219,7 +219,7 @@ function createTransferBoard(data, senderId, recipientId, amount) {
     infoBoard.setAttribute("id", "theTransferBoard");
 
     infoBoard.appendChild(createInfoCard("Sender", [senderId, data[senderId]]))
-    infoBoard.appendChild(createInfoCard("Data", [data["transaction"], amount]));
+    infoBoard.appendChild(createInfoCard("Data", [data.transactionId, amount]));
     infoBoard.appendChild(createInfoCard("Recipient", [recipientId, data[recipientId]]));
 
     return infoBoard;

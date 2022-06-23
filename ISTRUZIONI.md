@@ -92,7 +92,7 @@ Di seguito lascio il risultato di `ldd runtime/server` per confrontarlo con l'es
 
 Questa cartella contiene la totalità dei file che il server usa in fase di esecuzione
 
-Questa comprende una copia dell'eseguibile compilato `server`, un file di configurazione `config.json`, una cartella `static` con tutti i file html, js, css esposti staticamente ai client.
+Questa comprende una copia dell'eseguibile compilato `server`, un file di configurazione `config.json`, una cartella `static` con tutti i file html, js, css esposti ai client.
 
 Contiene inoltre il file `database.db`, un file in formato sqlite3 che rappresenta i dati software in memoria secondaria.
 E' inoltre presente un file `database.sql` che contiene le regole SQL che il server usa per creare il database in caso di rimozione del file.

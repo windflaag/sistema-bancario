@@ -79,7 +79,7 @@ void rest::ApiDivertController::onEOM() noexcept {
     Json::Value object = Json::objectValue;
     object[fromId] = fromCredit - amount;
     object[toId] = toCredit + amount;
-    object["transaction"] = transactionId;
+    object["transactionId"] = transactionId;
     
     delete metadata;
     std::string result = utility::jsonToString(object);
