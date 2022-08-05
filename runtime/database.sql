@@ -4,7 +4,7 @@ create table if not exists Accounts (
     accountId varchar(20) primary key,
     name varchar(80) not null,
     credit int default 0 check(credit >= 0),
-    surname varcahr(80) not null
+    surname varchar(80) not null
 );
 
 create table if not exists Transactions (
