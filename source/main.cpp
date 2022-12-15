@@ -3,6 +3,7 @@
 #include "singleton/Singleton.hpp"
 #include "database/Database.hpp"
 #include "utility/Utility.hpp"
+#include <filesystem>
 
 void init_folly (int argc, char **argv) {
   folly::init(&argc, &argv, true);
@@ -10,6 +11,7 @@ void init_folly (int argc, char **argv) {
 
 int main(int argc, char **argv) {
   init_folly(argc, argv);
+  std::filesystem::current_path(std::filesystem::path("/usr/share/sistema-bancario"));
 
   // read configuration file
   singleton::instance()

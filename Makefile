@@ -13,14 +13,16 @@ make:
 ninja:
 	clear && ninja -C build && cp build/main runtime/server
 
-install:
+install_dependencies:
 	./install_dependencies.sh
+
+install:
+	./install.sh
 
 run:
 	make -C ./runtime run
 
 clean:
-	make -C ./runtime clean
 	rm -rf deps && mkdir deps
 	rm -rf build && mkdir build
 	@ echo -e emacs files to be cleaned: $$(find -name "*~" | xargs)

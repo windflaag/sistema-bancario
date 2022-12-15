@@ -40,7 +40,7 @@ yay -Syu proxygen
 #### "Manuale"
 
 ```
-make install
+make install_dependencies
 ```
 
 make richiama lo script `install_dependencies.sh`

@@ -1,5 +1,5 @@
 #!/bin/bash
-BUILD_SPEED=$(nproc --all)
+BUILD_SPEED=$(nproc --ignore=1)
 
 CMAKE_C_COMPILER=gcc
 CMAKE_CXX_COMPILER=g++
@@ -7,8 +7,8 @@ CMAKE_GENERATOR=""
 MAKE_COMMAND="make"
 MAKE_COMMAND_ARGS="-j$BUILD_SPEED"
 
-USE_CLANG_IF_EXISTS=yes
-USE_NINJA_IF_EXISTS=yes
+USE_CLANG_IF_EXISTS=no
+USE_NINJA_IF_EXISTS=no
 
 function check_clang () {
     if [[ -f /usr/bin/clang++ && $USE_CLANG_IF_EXISTS == yes ]]; then
@@ -34,12 +34,7 @@ function build_executable () {
     LAUNCHER_CMAKE="cmake ../source -D CMAKE_C_COMPILER=$CMAKE_C_COMPILER -D CMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER $CMAKE_GENERATOR"
     LAUNCHER_MAKE="$MAKE_COMMAND $MAKE_COMMAND_ARGS"
 
-    $LAUNCHER_CMAKE && $LAUNCHER_MAKE && link_to_runtime
-}
-
-function link_to_runtime () {
-    cd ..
-    cp ./build/main ./runtime/server
+    $LAUNCHER_CMAKE && $LAUNCHER_MAKE
 }
 
 function main () {
