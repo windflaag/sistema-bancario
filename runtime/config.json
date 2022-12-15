@@ -6,14 +6,14 @@
     },
     
     "StaticEngine": {
-        "basePath": "./static"
+        "basePath": "/usr/share/sistema-bancario/static"
     },
 
     "Database" : {
-        "filePath": "./database.db",
-        "initPath": "./database.sql"
+        "filePath": "/usr/share/sistema-bancario/database.db",
+        "initPath": "/usr/share/sistema-bancario/database.sql"
     },
     "Logger": {
-        "logPath": "./log/"
+        "logPath": "/var/log/sistema-bancario"
     }
 }

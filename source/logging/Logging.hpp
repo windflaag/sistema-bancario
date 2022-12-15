@@ -3,7 +3,7 @@
 
 #include <string>
 
-#define DEFAULT_LOG_PATH "./log/"
+#define DEFAULT_LOG_PATH "/var/log/sistema-bancario/"
 
 namespace logging {
   class Logger {
